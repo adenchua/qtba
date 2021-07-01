@@ -4,13 +4,13 @@ import CheckedCircleIcon from "@material-ui/icons/CheckCircle";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: "inline-block",
     minWidth: "100%",
-    border: "1px solid #dbe3e8",
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: 4,
   },
   table: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
   },
   tableHeaderRow: {
     padding: "8px",
-    borderBottom: "2px solid #E8E8E8",
+    borderBottom: `2px solid ${theme.palette.divider}`,
   },
   tableHeaderText: {
     textTransform: "uppercase",
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   tableBodyRow: {
     background: "#FFF",
     "&:not(:last-child)": {
-      borderBottom: "1px solid #E8E8E8",
+      borderBottom: `1px solid ${theme.palette.divider}`,
     },
   },
   tableBodyRowColumn: {
