@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from "react";
 import CheckCircleIcon from "@material-ui/icons/CheckCircleOutline";
 import CheckedCircleIcon from "@material-ui/icons/CheckCircle";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, Theme } from "@material-ui/core/styles";
+
+import QuestionMeatballsMenu from "./QuestionMeatballsMenu";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -90,7 +91,7 @@ const QTBATable = (): JSX.Element => {
           </th>
           <th className={classes.tableHeaderRow}>
             <Typography align='left' className={classes.tableHeaderText} variant='body2'>
-              Questions
+              Question
             </Typography>
           </th>
           <th className={classes.tableHeaderRow}>
@@ -130,9 +131,7 @@ const QTBATable = (): JSX.Element => {
           )}
         </td>
         <td className={classes.tableBodyRowColumn}>
-          <IconButton size='small'>
-            <MoreHorizIcon fontSize='small' color='disabled' />
-          </IconButton>
+          <QuestionMeatballsMenu />
         </td>
       </tr>
     );

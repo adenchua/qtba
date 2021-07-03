@@ -44,7 +44,7 @@ const CapabilityCreationButton = (): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} color='primary'>
+          <Button onClick={handleClose} color='primary' disabled={capabilityInput.length === 0}>
             Add Capability
           </Button>
         </DialogActions>

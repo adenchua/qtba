@@ -3,16 +3,14 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import AddIcon from "@material-ui/icons/Add";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
-import Button from "@material-ui/core/Button";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import QTBACreationButton from "../components/QTBACreationButton";
+import TableKebabMenu from "../components/TableKebabMenu";
 import QTBATable from "../components/QTBATable";
 import { DRAWER_WIDTH } from "../utils/constants";
 
@@ -28,10 +26,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: 36,
     padding: "0px 8px",
     caretColor: theme.palette.primary.main,
-  },
-  button: {
-    textTransform: "none",
-    fontWeight: "bolder",
   },
 }));
 
@@ -55,20 +49,10 @@ const CapabilityPage = (): JSX.Element => {
               </Paper>
             </Grid>
             <Grid item>
-              <Button
-                variant='contained'
-                color='primary'
-                disableElevation
-                className={classes.button}
-                startIcon={<AddIcon />}
-              >
-                Add Question
-              </Button>
+              <QTBACreationButton />
             </Grid>
             <Grid item>
-              <IconButton size='small' color='primary'>
-                <MoreVertIcon />
-              </IconButton>
+              <TableKebabMenu />
             </Grid>
           </Grid>
           <QTBATable />

@@ -40,7 +40,7 @@ const PlatformCreationButton = (): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} color='primary'>
+          <Button onClick={handleClose} color='primary' disabled={platformInput.length === 0}>
             Create Platform
           </Button>
         </DialogActions>
