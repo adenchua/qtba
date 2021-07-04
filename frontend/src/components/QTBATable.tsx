@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 
 import QuestionMeatballsMenu from "./QuestionMeatballsMenu";
+import QuestionInterface from "../types/QuestionInterface";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -41,23 +42,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const QUESTIONS_BANK = [
-  {
-    question: "How do we find out more about you?",
-    questionIndex: 1,
-    likes: 46,
-    isStrikeThrough: true,
-  },
-  {
-    question:
-      "How can a customer service team recognize these customer needs and effectively solve them on a day-to-day basis?",
-    questionIndex: 2,
-    likes: 27,
-    isStrikeThrough: false,
-  },
-];
+interface QTBATableProps {
+  questions: QuestionInterface[];
+}
 
-const QTBATable = (): JSX.Element => {
+const QTBATable = (props: QTBATableProps): JSX.Element => {
+  const { questions } = props;
   const classes = useStyles();
   const [votedQuestionIndexes, setVotedQuestionsIndexes] = useState<number[]>([]);
 
@@ -142,9 +132,9 @@ const QTBATable = (): JSX.Element => {
       <table className={classes.table} cellSpacing={0} cellPadding={0}>
         {renderTableHeader()}
         <tbody>
-          {QUESTIONS_BANK.map((qtba) => {
-            const { question, questionIndex } = qtba;
-            return renderTableRow(question, questionIndex);
+          {questions.map((qtba, index) => {
+            const { title } = qtba;
+            return renderTableRow(title, index + 1);
           })}
         </tbody>
       </table>

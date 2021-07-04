@@ -5,7 +5,7 @@ import Module from "../models/module";
 import { removeUndefinedKeysFromObject } from "../utils/removeUndefinedKeysFromObject";
 
 export async function createQuestion(req: Request, res: Response) {
-  const { moduleId, title, comment } = req.body;
+  const { moduleId, title, comment = "" } = req.body;
 
   if (!title || !moduleId) {
     res.status(400).send();

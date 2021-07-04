@@ -18,7 +18,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const QTBACreationButton = (): JSX.Element => {
+interface QTBACreationButtonProps {
+  onAddQuestionHandler: (title: string) => Promise<void>;
+}
+
+const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
+  const { onAddQuestionHandler } = props;
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [questionInput, setQuestionInput] = useState<string>("");
@@ -26,6 +31,11 @@ const QTBACreationButton = (): JSX.Element => {
   const handleClose = (): void => {
     setIsDialogOpen(false);
     setQuestionInput("");
+  };
+
+  const handleAddQuestion = async (): Promise<void> => {
+    await onAddQuestionHandler(questionInput);
+    handleClose();
   };
 
   return (
@@ -62,7 +72,7 @@ const QTBACreationButton = (): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} color='primary' disabled={questionInput.length === 0}>
+          <Button onClick={handleAddQuestion} color='primary' disabled={questionInput.length === 0}>
             Add Question
           </Button>
         </DialogActions>

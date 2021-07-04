@@ -6,7 +6,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path='/:platformId/:moduleId' component={ModulePage} />
+        <Route path='/:platformSlug/:moduleSlug' component={ModulePage} />
         <Route path='/' component={LandingPage} />
       </Switch>
     </BrowserRouter>

@@ -3,6 +3,15 @@ import { Request, Response } from "express";
 import Module, { ModuleDocumentInterface } from "../models/module";
 import Platform from "../models/platform";
 import getSlugFromTitle from "../utils/getSlugFromTitle";
+import generateRandomString from "../utils/generateRandomString";
+
+async function doesModuleSlugExists(slug: string): Promise<boolean> {
+  const module = await Module.findOne({ slug });
+  if (module) {
+    return true;
+  }
+  return false;
+}
 
 export async function createModule(req: Request, res: Response) {
   const { platformId, title } = req.body;
@@ -13,7 +22,10 @@ export async function createModule(req: Request, res: Response) {
   }
 
   try {
-    const slug = getSlugFromTitle(title);
+    let slug = getSlugFromTitle(title);
+    while (await doesModuleSlugExists(slug)) {
+      slug = `${getSlugFromTitle(title)}-${generateRandomString(5)}`;
+    }
     const newModule = new Module({ title, slug });
     const platform = await Platform.findById(platformId);
     if (!platform) {
@@ -47,6 +59,22 @@ export async function getModulesByIds(req: Request, res: Response) {
     }
 
     res.status(200).send(results);
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).send();
+  }
+}
+
+export async function getModuleBySlug(req: Request, res: Response) {
+  const { slug } = req.params;
+
+  try {
+    const module = await Module.findOne({ slug });
+    if (!module) {
+      res.status(400).send();
+      return;
+    }
+    res.status(200).send(module);
   } catch (error) {
     console.error("error", error);
     res.status(500).send();
