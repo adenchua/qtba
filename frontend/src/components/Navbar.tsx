@@ -21,17 +21,17 @@ const capitalizeFirstLetter = (str: string): string => {
 };
 
 const Navbar = (): JSX.Element => {
-  const { capabilityId } = useParams<{ capabilityId: string | undefined }>();
+  const { moduleId } = useParams<{ moduleId: string | undefined }>();
   const classes = useStyles();
 
-  const convertLinkToTitle = (capabilityLink: string | undefined): string => {
-    if (!capabilityLink) {
+  const convertLinkToTitle = (moduleLink: string | undefined): string => {
+    if (!moduleLink) {
       return "";
     }
 
     return (
       "# " +
-      capabilityLink
+      moduleLink
         .split("-")
         .map((word) => capitalizeFirstLetter(word))
         .join(" ")
@@ -41,7 +41,7 @@ const Navbar = (): JSX.Element => {
   return (
     <AppBar position='fixed' className={classes.appBar} elevation={0}>
       <Toolbar variant='dense'>
-        <Typography color='textPrimary'>{convertLinkToTitle(capabilityId)}</Typography>
+        <Typography color='textPrimary'>{convertLinkToTitle(moduleId)}</Typography>
       </Toolbar>
     </AppBar>
   );

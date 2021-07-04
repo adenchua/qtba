@@ -63,8 +63,8 @@ export async function updateQuestion(req: Request, res: Response) {
   const fieldsToUpdate = removeUndefinedKeysFromObject({ title, isStrikethrough, comment, voteCount });
 
   try {
-    const questionToUpdate = await Question.findByIdAndUpdate(fieldsToUpdate);
-    res.status(200).send(questionToUpdate);
+    await Question.findByIdAndUpdate(questionId, fieldsToUpdate);
+    res.status(204).send();
   } catch (error) {
     console.error("error", error);
     res.status(500).send();

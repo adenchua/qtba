@@ -11,13 +11,23 @@ import Button from "@material-ui/core/Button";
 
 const CAPABILITY_MAX_LENGTH = 24;
 
-const CapabilityCreationButton = (): JSX.Element => {
+interface ModuleCreationButtonProps {
+  addModuleHandler: (moduleTitle: string) => Promise<void>;
+}
+
+const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => {
+  const { addModuleHandler } = props;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [capabilityInput, setCapabilityInput] = useState<string>("");
+  const [moduleInput, setModuleInput] = useState<string>("");
 
   const handleClose = (): void => {
     setIsDialogOpen(false);
-    setCapabilityInput("");
+    setModuleInput("");
+  };
+
+  const handleAddModule = async (): Promise<void> => {
+    await addModuleHandler(moduleInput);
+    handleClose();
   };
 
   return (
@@ -26,7 +36,7 @@ const CapabilityCreationButton = (): JSX.Element => {
         <AddIcon fontSize='small' />
       </IconButton>
       <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='xs' fullWidth>
-        <DialogTitle>New Capability</DialogTitle>
+        <DialogTitle>New Module</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -37,15 +47,15 @@ const CapabilityCreationButton = (): JSX.Element => {
             }}
             fullWidth
             inputProps={{ maxLength: CAPABILITY_MAX_LENGTH }}
-            value={capabilityInput}
-            onChange={(e) => setCapabilityInput(e.target.value)}
-            helperText={`${CAPABILITY_MAX_LENGTH - capabilityInput.length} characters remaining`}
+            value={moduleInput}
+            onChange={(e) => setModuleInput(e.target.value)}
+            helperText={`${CAPABILITY_MAX_LENGTH - moduleInput.length} characters remaining`}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} color='primary' disabled={capabilityInput.length === 0}>
-            Add Capability
+          <Button onClick={handleAddModule} color='primary' disabled={moduleInput.length === 0}>
+            Add Module
           </Button>
         </DialogActions>
       </Dialog>
@@ -53,4 +63,4 @@ const CapabilityCreationButton = (): JSX.Element => {
   );
 };
 
-export default CapabilityCreationButton;
+export default ModuleCreationButton;

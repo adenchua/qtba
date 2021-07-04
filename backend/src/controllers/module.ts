@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import Module, { ModuleDocumentInterface } from "../models/module";
 import Platform from "../models/platform";
-import getSlugFromTitle from "../utils/getSlutFromTitle";
+import getSlugFromTitle from "../utils/getSlugFromTitle";
 
 export async function createModule(req: Request, res: Response) {
   const { platformId, title } = req.body;

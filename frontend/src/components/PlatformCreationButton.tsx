@@ -10,13 +10,23 @@ import Button from "@material-ui/core/Button";
 
 const PLATFORM_MAX_LENGTH = 16;
 
-const PlatformCreationButton = (): JSX.Element => {
+interface PlatformCreationButtonProps {
+  createPlatformHandler: (platformTitle: string) => Promise<void>;
+}
+
+const PlatformCreationButton = (props: PlatformCreationButtonProps): JSX.Element => {
+  const { createPlatformHandler } = props;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [platformInput, setPlatformInput] = useState<string>("");
 
   const handleClose = (): void => {
     setIsDialogOpen(false);
     setPlatformInput("");
+  };
+
+  const handleCreatePlatform = async (): Promise<void> => {
+    await createPlatformHandler(platformInput);
+    handleClose();
   };
 
   return (
@@ -40,7 +50,7 @@ const PlatformCreationButton = (): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} color='primary' disabled={platformInput.length === 0}>
+          <Button onClick={handleCreatePlatform} color='primary' disabled={platformInput.length === 0}>
             Create Platform
           </Button>
         </DialogActions>

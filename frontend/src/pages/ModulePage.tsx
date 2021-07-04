@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CapabilityPage = (): JSX.Element => {
+const ModulePage = (): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -62,4 +62,4 @@ const CapabilityPage = (): JSX.Element => {
   );
 };
 
-export default CapabilityPage;
+export default ModulePage;

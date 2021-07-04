@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import Platform from "../models/platform";
-import getSlugFromTitle from "../utils/getSlutFromTitle";
+import getSlugFromTitle from "../utils/getSlugFromTitle";
 
 export async function createPlatform(req: Request, res: Response) {
   const { title } = req.body;

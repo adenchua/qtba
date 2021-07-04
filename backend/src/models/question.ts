@@ -18,7 +18,7 @@ const questionSchemaFields: Record<keyof QuestionInterface, any> = {
     required: true,
     trim: true,
     minlength: 1,
-    maxlength: 64,
+    maxlength: 256,
   },
   createdDate: {
     type: Date,
