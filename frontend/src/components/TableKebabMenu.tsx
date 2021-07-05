@@ -5,7 +5,13 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
-const TableKebabMenu = (): JSX.Element => {
+interface TableKebabMenuProps {
+  onToggleShowVoteCount: (newState: boolean) => void;
+  showVoteCount: boolean;
+}
+
+const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
+  const { onToggleShowVoteCount, showVoteCount } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -14,6 +20,11 @@ const TableKebabMenu = (): JSX.Element => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleToggleVoteCountVisibility = (): void => {
+    onToggleShowVoteCount(!showVoteCount);
+    handleClose();
   };
 
   return (
@@ -34,17 +45,18 @@ const TableKebabMenu = (): JSX.Element => {
         }}
         elevation={2}
       >
-        <MenuItem onClick={handleClose} dense>
+        <MenuItem onClick={handleToggleVoteCountVisibility} dense>
           <Typography variant='body2' color='primary'>
-            Show vote count
+            {showVoteCount ? "Hide" : "Show"} vote count
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleClose} dense>
+
+        <MenuItem onClick={handleClose} dense disabled>
           <Typography variant='body2' color='primary'>
             Disable voting
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleClose} dense>
+        <MenuItem onClick={handleClose} dense disabled>
           <Typography variant='body2' color='primary'>
             Reset votes
           </Typography>

@@ -5,8 +5,18 @@ import IconButton from "@material-ui/core/IconButton";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Typography from "@material-ui/core/Typography";
 
-const QuestionMeatballsMenu = (): JSX.Element => {
+import QuestionInterface from "../types/QuestionInterface";
+
+interface QuestionMeatballsMenuProps {
+  onStrikethroughHandler: (questionId: string) => Promise<void>;
+  onUnStrikethroughHandler: (questionId: string) => Promise<void>;
+  question: QuestionInterface;
+}
+
+const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element => {
+  const { onStrikethroughHandler, onUnStrikethroughHandler, question } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { _id: questionId, isStrikethrough } = question;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -14,6 +24,16 @@ const QuestionMeatballsMenu = (): JSX.Element => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleStrikethrough = () => {
+    onStrikethroughHandler(questionId);
+    handleClose();
+  };
+
+  const handleUnStikethroughQuestion = () => {
+    onUnStrikethroughHandler(questionId);
+    handleClose();
   };
 
   return (
@@ -39,11 +59,20 @@ const QuestionMeatballsMenu = (): JSX.Element => {
             Edit question
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleClose} dense>
-          <Typography variant='body2' color='primary'>
-            Strikethrough question
-          </Typography>
-        </MenuItem>
+        {!isStrikethrough && (
+          <MenuItem onClick={handleStrikethrough} dense>
+            <Typography variant='body2' color='primary'>
+              Strikethrough question
+            </Typography>
+          </MenuItem>
+        )}
+        {isStrikethrough && (
+          <MenuItem onClick={handleUnStikethroughQuestion} dense>
+            <Typography variant='body2' color='primary'>
+              Undo strikethrough
+            </Typography>
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

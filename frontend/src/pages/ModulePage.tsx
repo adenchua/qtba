@@ -20,6 +20,9 @@ import ModuleInterface from "../types/ModuleInterface";
 import QuestionInterface from "../types/QuestionInterface";
 import getModuleQuestions from "../api/getModuleQuestions";
 import addQuestionToModule from "../api/addQuestionToModule";
+import incrementQuestionVote from "../api/incrementQuestionVote";
+import strikethroughQuestion from "../api/strikethroughQuestion";
+import unStrikethroughQuestion from "../api/unStrikethroughQuestion";
 
 const useStyles = makeStyles((theme: Theme) => ({
   mb2: {
@@ -40,6 +43,7 @@ const ModulePage = (): JSX.Element => {
   const { moduleSlug } = useParams<{ moduleSlug: string | undefined }>();
   const [module, setModule] = useState<ModuleInterface | null>(null);
   const [questions, setQuestions] = useState<QuestionInterface[]>([]);
+  const [showVoteCount, setShowVoteCount] = useState<boolean>(false);
   const classes = useStyles();
 
   useEffect(() => {
@@ -84,6 +88,59 @@ const ModulePage = (): JSX.Element => {
     }
   };
 
+  const handleIncrementVote = async (questionId: string): Promise<void> => {
+    try {
+      const updatedQuestion = await incrementQuestionVote(questionId);
+      const { _id: updatedQuestionId, voteCount: updatedQuestionVoteCount } = updatedQuestion;
+      setQuestions((prevState) =>
+        prevState.map((question) => {
+          if (question._id === updatedQuestionId) {
+            question.voteCount = updatedQuestionVoteCount;
+          }
+          return question;
+        })
+      );
+    } catch (error) {
+      // do nothing
+    }
+  };
+
+  const handleStikethroughQuestion = async (questionId: string): Promise<void> => {
+    try {
+      await strikethroughQuestion(questionId);
+      setQuestions((prevState) =>
+        prevState.map((question) => {
+          if (question._id === questionId) {
+            question.isStrikethrough = true;
+          }
+          return question;
+        })
+      );
+    } catch (error) {
+      // do nothing
+    }
+  };
+
+  const handleUnStikethroughQuestion = async (questionId: string): Promise<void> => {
+    try {
+      await unStrikethroughQuestion(questionId);
+      setQuestions((prevState) =>
+        prevState.map((question) => {
+          if (question._id === questionId) {
+            question.isStrikethrough = false;
+          }
+          return question;
+        })
+      );
+    } catch (error) {
+      // do nothing
+    }
+  };
+
+  const handleToggleShowVoteCount = (newState: boolean): void => {
+    setShowVoteCount(newState);
+  };
+
   return (
     <>
       <Navbar />
@@ -104,10 +161,16 @@ const ModulePage = (): JSX.Element => {
               <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
             </Grid>
             <Grid item>
-              <TableKebabMenu />
+              <TableKebabMenu onToggleShowVoteCount={handleToggleShowVoteCount} showVoteCount={showVoteCount} />
             </Grid>
           </Grid>
-          <QTBATable questions={questions} />
+          <QTBATable
+            questions={questions}
+            onIncrementVoteHandler={handleIncrementVote}
+            onStrikethroughHandler={handleStikethroughQuestion}
+            onUnStrikethroughHandler={handleUnStikethroughQuestion}
+            showVoteCount={showVoteCount}
+          />
         </Box>
       </Container>
     </>

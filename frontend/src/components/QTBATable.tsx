@@ -40,34 +40,43 @@ const useStyles = makeStyles((theme: Theme) => ({
   tableBodyRowColumn: {
     padding: "8px",
   },
+  strikethrough: {
+    textDecoration: "line-through",
+    color: "lightgrey",
+    "&:hover": {
+      color: "unset",
+    },
+  },
 }));
 
 interface QTBATableProps {
   questions: QuestionInterface[];
+  onIncrementVoteHandler: (questionId: string) => Promise<void>;
+  onStrikethroughHandler: (questionId: string) => Promise<void>;
+  onUnStrikethroughHandler: (questionId: string) => Promise<void>;
+  showVoteCount: boolean;
 }
 
 const QTBATable = (props: QTBATableProps): JSX.Element => {
-  const { questions } = props;
+  const { questions, onIncrementVoteHandler, onStrikethroughHandler, onUnStrikethroughHandler, showVoteCount } = props;
   const classes = useStyles();
-  const [votedQuestionIndexes, setVotedQuestionsIndexes] = useState<number[]>([]);
+  const [votedQuestionIds, setVotedQuestionIds] = useState<string[]>([]);
 
-  const handleVoteQuestion = (questionIndex: number): void => {
-    if (votedQuestionIndexes.includes(questionIndex)) {
+  const handleVoteQuestion = async (questionId: string): Promise<void> => {
+    if (votedQuestionIds.includes(questionId)) {
       return; // already in vote
     }
-
-    setVotedQuestionsIndexes((prevState) => [...prevState, questionIndex]);
+    await onIncrementVoteHandler(questionId);
+    setVotedQuestionIds((prevState) => [...prevState, questionId]);
   };
 
-  const handleUnvoteQuestion = (questionIndex: number): void => {
-    if (!votedQuestionIndexes.includes(questionIndex)) {
+  const handleUnvoteQuestion = (questionId: string): void => {
+    if (!votedQuestionIds.includes(questionId)) {
       return;
     }
 
-    const updatedQuestionIndexes = votedQuestionIndexes.filter(
-      (questionIndexInArray) => questionIndexInArray !== questionIndex
-    );
-    setVotedQuestionsIndexes(updatedQuestionIndexes);
+    const updatedQuestionIndexes = votedQuestionIds.filter((questionIdInArray) => questionIdInArray !== questionId);
+    setVotedQuestionIds(updatedQuestionIndexes);
   };
 
   const renderTableHeader = useCallback((): JSX.Element => {
@@ -95,33 +104,43 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
     );
   }, [classes.tableHeader, classes.tableHeaderRow, classes.tableHeaderText]);
 
-  const renderTableRow = (question: string, questionIndex: number): JSX.Element => {
+  const renderTableRow = (question: QuestionInterface, questionIndex: number): JSX.Element => {
+    const { title, _id: questionId, voteCount, isStrikethrough } = question;
     return (
-      <tr className={classes.tableBodyRow} key={questionIndex}>
+      <tr className={classes.tableBodyRow} key={questionId}>
         <td className={classes.tableBodyRowColumn}>
           <Typography variant='body2' color='textSecondary'>
             {questionIndex}
           </Typography>
         </td>
         <td className={classes.tableBodyRowColumn}>
-          <Typography variant='body2' color='textSecondary'>
-            {question}
+          <Typography variant='body2' color='textSecondary' className={isStrikethrough ? classes.strikethrough : ""}>
+            {title}
           </Typography>
         </td>
         <td className={classes.tableBodyRowColumn}>
-          {!votedQuestionIndexes.includes(questionIndex) && (
-            <IconButton size='small' onClick={() => handleVoteQuestion(questionIndex)}>
+          {showVoteCount && (
+            <Typography variant='body2' color='textSecondary' className={isStrikethrough ? classes.strikethrough : ""}>
+              {voteCount}
+            </Typography>
+          )}
+          {!showVoteCount && !votedQuestionIds.includes(questionId) && (
+            <IconButton size='small' onClick={() => handleVoteQuestion(questionId)}>
               <CheckCircleIcon fontSize='small' color='disabled' />
             </IconButton>
           )}
-          {votedQuestionIndexes.includes(questionIndex) && (
-            <IconButton size='small' onClick={() => handleUnvoteQuestion(questionIndex)}>
+          {!showVoteCount && votedQuestionIds.includes(questionId) && (
+            <IconButton size='small' onClick={() => handleUnvoteQuestion(questionId)}>
               <CheckedCircleIcon fontSize='small' color='primary' />
             </IconButton>
           )}
         </td>
         <td className={classes.tableBodyRowColumn}>
-          <QuestionMeatballsMenu />
+          <QuestionMeatballsMenu
+            onStrikethroughHandler={onStrikethroughHandler}
+            onUnStrikethroughHandler={onUnStrikethroughHandler}
+            question={question}
+          />
         </td>
       </tr>
     );
@@ -133,8 +152,7 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
         {renderTableHeader()}
         <tbody>
           {questions.map((qtba, index) => {
-            const { title } = qtba;
-            return renderTableRow(title, index + 1);
+            return renderTableRow(qtba, index + 1);
           })}
         </tbody>
       </table>
