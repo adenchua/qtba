@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import Module, { ModuleDocumentInterface } from "../models/module";
+import Question from "../models/question";
 import Platform from "../models/platform";
 import getSlugFromTitle from "../utils/getSlugFromTitle";
 import generateRandomString from "../utils/generateRandomString";
@@ -75,6 +76,27 @@ export async function getModuleBySlug(req: Request, res: Response) {
       return;
     }
     res.status(200).send(module);
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).send();
+  }
+}
+
+export async function resetModuleQuestionVotes(req: Request, res: Response) {
+  const { moduleId } = req.body;
+
+  try {
+    const module = await Module.findById(moduleId);
+    if (!module) {
+      res.status(400).send();
+      return;
+    }
+
+    const questionIds = module.questions;
+    for (const questionId of questionIds) {
+      await Question.findByIdAndUpdate(questionId, { voteCount: 0 });
+    }
+    res.status(204).send();
   } catch (error) {
     console.error("error", error);
     res.status(500).send();

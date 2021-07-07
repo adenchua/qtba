@@ -6,16 +6,19 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Typography from "@material-ui/core/Typography";
 
 import QuestionInterface from "../types/QuestionInterface";
+import EditQuestionDialog from "./EditQuestionDialog";
 
 interface QuestionMeatballsMenuProps {
   onStrikethroughHandler: (questionId: string) => Promise<void>;
   onUnStrikethroughHandler: (questionId: string) => Promise<void>;
+  onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
   question: QuestionInterface;
 }
 
 const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element => {
-  const { onStrikethroughHandler, onUnStrikethroughHandler, question } = props;
+  const { onStrikethroughHandler, onUnStrikethroughHandler, question, onEditQuestionHandler } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const { _id: questionId, isStrikethrough } = question;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,6 +36,15 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
 
   const handleUnStikethroughQuestion = () => {
     onUnStrikethroughHandler(questionId);
+    handleClose();
+  };
+
+  const handleCloseEditingDialog = () => {
+    setIsEditDialogOpen(false);
+  };
+
+  const handleOpenEditingDialog = () => {
+    setIsEditDialogOpen(true);
     handleClose();
   };
 
@@ -54,7 +66,7 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
         }}
         elevation={2}
       >
-        <MenuItem onClick={handleClose} dense>
+        <MenuItem onClick={handleOpenEditingDialog} dense>
           <Typography variant='body2' color='primary'>
             Edit question
           </Typography>
@@ -74,6 +86,12 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
           </MenuItem>
         )}
       </Menu>
+      <EditQuestionDialog
+        question={question}
+        isOpen={isEditDialogOpen}
+        onCloseHandler={handleCloseEditingDialog}
+        onConfirmEditHandler={onEditQuestionHandler}
+      />
     </>
   );
 };

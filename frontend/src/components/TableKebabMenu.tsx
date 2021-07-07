@@ -7,11 +7,12 @@ import Typography from "@material-ui/core/Typography";
 
 interface TableKebabMenuProps {
   onToggleShowVoteCount: (newState: boolean) => void;
+  onResetAllVotesHandler: () => Promise<void>;
   showVoteCount: boolean;
 }
 
 const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
-  const { onToggleShowVoteCount, showVoteCount } = props;
+  const { onToggleShowVoteCount, showVoteCount, onResetAllVotesHandler } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,6 +25,11 @@ const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
 
   const handleToggleVoteCountVisibility = (): void => {
     onToggleShowVoteCount(!showVoteCount);
+    handleClose();
+  };
+
+  const handleResetAllVotes = (): void => {
+    onResetAllVotesHandler();
     handleClose();
   };
 
@@ -50,15 +56,14 @@ const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
             {showVoteCount ? "Hide" : "Show"} vote count
           </Typography>
         </MenuItem>
-
-        <MenuItem onClick={handleClose} dense disabled>
+        <MenuItem onClick={handleResetAllVotes} dense>
           <Typography variant='body2' color='primary'>
-            Disable voting
+            Reset votes
           </Typography>
         </MenuItem>
         <MenuItem onClick={handleClose} dense disabled>
           <Typography variant='body2' color='primary'>
-            Reset votes
+            Disable voting
           </Typography>
         </MenuItem>
         <MenuItem onClick={handleClose} dense disabled>

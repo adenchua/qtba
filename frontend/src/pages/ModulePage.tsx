@@ -23,6 +23,8 @@ import addQuestionToModule from "../api/addQuestionToModule";
 import incrementQuestionVote from "../api/incrementQuestionVote";
 import strikethroughQuestion from "../api/strikethroughQuestion";
 import unStrikethroughQuestion from "../api/unStrikethroughQuestion";
+import updateQuestion from "../api/updateQuestion";
+import resetModuleQuestionVotes from "../api/resetModuleQuestionVotes";
 
 const useStyles = makeStyles((theme: Theme) => ({
   mb2: {
@@ -44,6 +46,7 @@ const ModulePage = (): JSX.Element => {
   const [module, setModule] = useState<ModuleInterface | null>(null);
   const [questions, setQuestions] = useState<QuestionInterface[]>([]);
   const [showVoteCount, setShowVoteCount] = useState<boolean>(false);
+  const [searchFilter, setSearchFilter] = useState<string>("");
   const classes = useStyles();
 
   useEffect(() => {
@@ -141,6 +144,40 @@ const ModulePage = (): JSX.Element => {
     setShowVoteCount(newState);
   };
 
+  const handleEditQuestion = async (updatedQuestionTitle: string, questionId: string): Promise<void> => {
+    try {
+      await updateQuestion(updatedQuestionTitle, questionId);
+      setQuestions((prevState) =>
+        prevState.map((question) => {
+          if (question._id === questionId) {
+            question.title = updatedQuestionTitle;
+          }
+          return question;
+        })
+      );
+    } catch (error) {
+      // do nothing
+    }
+  };
+
+  const handleResetAllQuestionVotes = async (): Promise<void> => {
+    if (!module) {
+      return;
+    }
+    const { _id: moduleId } = module;
+    try {
+      await resetModuleQuestionVotes(moduleId);
+      setQuestions((prevState) =>
+        prevState.map((question) => {
+          question.voteCount = 0;
+          return question;
+        })
+      );
+    } catch (error) {
+      // do nothing
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -154,21 +191,31 @@ const ModulePage = (): JSX.Element => {
           <Grid container justify='flex-end' alignItems='center' className={classes.mb2} spacing={1}>
             <Grid item>
               <Paper elevation={0} className={classes.inputWrapper}>
-                <InputBase placeholder='search' />
+                <InputBase
+                  placeholder='search'
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                />
               </Paper>
             </Grid>
             <Grid item>
               <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
             </Grid>
             <Grid item>
-              <TableKebabMenu onToggleShowVoteCount={handleToggleShowVoteCount} showVoteCount={showVoteCount} />
+              <TableKebabMenu
+                onToggleShowVoteCount={handleToggleShowVoteCount}
+                showVoteCount={showVoteCount}
+                onResetAllVotesHandler={handleResetAllQuestionVotes}
+              />
             </Grid>
           </Grid>
           <QTBATable
+            searchFilter={searchFilter}
             questions={questions}
             onIncrementVoteHandler={handleIncrementVote}
             onStrikethroughHandler={handleStikethroughQuestion}
             onUnStrikethroughHandler={handleUnStikethroughQuestion}
+            onEditQuestionHandler={handleEditQuestion}
             showVoteCount={showVoteCount}
           />
         </Box>

@@ -9,7 +9,7 @@ import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
-const QUESTIONS_MAX_LENGTH = 256;
+import { QUESTIONS_MAX_LENGTH } from "../utils/constants";
 
 const useStyles = makeStyles(() => ({
   button: {

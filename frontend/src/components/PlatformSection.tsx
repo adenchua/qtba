@@ -20,7 +20,7 @@ const PlatformSection = (props: PlatformSectionProps): JSX.Element => {
   const [modules, setModules] = useState<ModuleInterface[]>([]);
   const { platform } = props;
   const { title, slug, modules: moduleIds, _id: currentPlatformId } = platform;
-  const { moduleId, platformId } = useParams<{ moduleId: string; platformId: string }>();
+  const { moduleSlug, platformSlug } = useParams<{ moduleSlug: string; platformSlug: string }>();
 
   useEffect(() => {
     const retrieveModules = async (): Promise<void> => {
@@ -36,7 +36,7 @@ const PlatformSection = (props: PlatformSectionProps): JSX.Element => {
   }, [moduleIds]);
 
   const isModuleSelected = (currentPlatform: string, currentModule: string): boolean => {
-    if (currentPlatform === platformId && currentModule === moduleId) {
+    if (currentPlatform === platformSlug && currentModule === moduleSlug) {
       return true;
     }
     return false;

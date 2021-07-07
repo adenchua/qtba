@@ -54,11 +54,21 @@ interface QTBATableProps {
   onIncrementVoteHandler: (questionId: string) => Promise<void>;
   onStrikethroughHandler: (questionId: string) => Promise<void>;
   onUnStrikethroughHandler: (questionId: string) => Promise<void>;
+  onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
   showVoteCount: boolean;
+  searchFilter: string;
 }
 
 const QTBATable = (props: QTBATableProps): JSX.Element => {
-  const { questions, onIncrementVoteHandler, onStrikethroughHandler, onUnStrikethroughHandler, showVoteCount } = props;
+  const {
+    questions,
+    onIncrementVoteHandler,
+    onStrikethroughHandler,
+    onUnStrikethroughHandler,
+    showVoteCount,
+    onEditQuestionHandler,
+    searchFilter,
+  } = props;
   const classes = useStyles();
   const [votedQuestionIds, setVotedQuestionIds] = useState<string[]>([]);
 
@@ -104,46 +114,54 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
     );
   }, [classes.tableHeader, classes.tableHeaderRow, classes.tableHeaderText]);
 
-  const renderTableRow = (question: QuestionInterface, questionIndex: number): JSX.Element => {
+  const renderTableRow = (question: QuestionInterface, questionIndex: number): JSX.Element | null => {
     const { title, _id: questionId, voteCount, isStrikethrough } = question;
-    return (
-      <tr className={classes.tableBodyRow} key={questionId}>
-        <td className={classes.tableBodyRowColumn}>
-          <Typography variant='body2' color='textSecondary'>
-            {questionIndex}
-          </Typography>
-        </td>
-        <td className={classes.tableBodyRowColumn}>
-          <Typography variant='body2' color='textSecondary' className={isStrikethrough ? classes.strikethrough : ""}>
-            {title}
-          </Typography>
-        </td>
-        <td className={classes.tableBodyRowColumn}>
-          {showVoteCount && (
-            <Typography variant='body2' color='textSecondary' className={isStrikethrough ? classes.strikethrough : ""}>
-              {voteCount}
+    if (title.toLowerCase().includes(searchFilter.toLowerCase())) {
+      return (
+        <tr className={classes.tableBodyRow} key={questionId}>
+          <td className={classes.tableBodyRowColumn}>
+            <Typography variant='body2' color='textSecondary'>
+              {questionIndex}
             </Typography>
-          )}
-          {!showVoteCount && !votedQuestionIds.includes(questionId) && (
-            <IconButton size='small' onClick={() => handleVoteQuestion(questionId)}>
-              <CheckCircleIcon fontSize='small' color='disabled' />
-            </IconButton>
-          )}
-          {!showVoteCount && votedQuestionIds.includes(questionId) && (
-            <IconButton size='small' onClick={() => handleUnvoteQuestion(questionId)}>
-              <CheckedCircleIcon fontSize='small' color='primary' />
-            </IconButton>
-          )}
-        </td>
-        <td className={classes.tableBodyRowColumn}>
-          <QuestionMeatballsMenu
-            onStrikethroughHandler={onStrikethroughHandler}
-            onUnStrikethroughHandler={onUnStrikethroughHandler}
-            question={question}
-          />
-        </td>
-      </tr>
-    );
+          </td>
+          <td className={classes.tableBodyRowColumn}>
+            <Typography variant='body2' color='textSecondary' className={isStrikethrough ? classes.strikethrough : ""}>
+              {title}
+            </Typography>
+          </td>
+          <td className={classes.tableBodyRowColumn}>
+            {showVoteCount && (
+              <Typography
+                variant='body2'
+                color='textSecondary'
+                className={isStrikethrough ? classes.strikethrough : ""}
+              >
+                {voteCount}
+              </Typography>
+            )}
+            {!showVoteCount && !votedQuestionIds.includes(questionId) && (
+              <IconButton size='small' onClick={() => handleVoteQuestion(questionId)} disabled={isStrikethrough}>
+                <CheckCircleIcon fontSize='small' />
+              </IconButton>
+            )}
+            {!showVoteCount && votedQuestionIds.includes(questionId) && (
+              <IconButton size='small' onClick={() => handleUnvoteQuestion(questionId)}>
+                <CheckedCircleIcon fontSize='small' color='primary' />
+              </IconButton>
+            )}
+          </td>
+          <td className={classes.tableBodyRowColumn}>
+            <QuestionMeatballsMenu
+              onStrikethroughHandler={onStrikethroughHandler}
+              onUnStrikethroughHandler={onUnStrikethroughHandler}
+              question={question}
+              onEditQuestionHandler={onEditQuestionHandler}
+            />
+          </td>
+        </tr>
+      );
+    }
+    return null;
   };
 
   return (
