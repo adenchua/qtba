@@ -4,6 +4,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 import { Link, useParams } from "react-router-dom";
 
 import PlatformInterface from "../types/PlatformInterface";
@@ -12,11 +13,18 @@ import ModuleCreationButton from "./ModuleCreationButton";
 import getPlatformModules from "../api/getPlatformModules";
 import addModuleToPlatform from "../api/addModuleToPlatform";
 
+const useStyles = makeStyles(() => ({
+  pl4: {
+    paddingLeft: 32,
+  },
+}));
+
 interface PlatformSectionProps {
   platform: PlatformInterface;
 }
 
 const PlatformSection = (props: PlatformSectionProps): JSX.Element => {
+  const classes = useStyles();
   const [modules, setModules] = useState<ModuleInterface[]>([]);
   const { platform } = props;
   const { title, slug, modules: moduleIds, _id: currentPlatformId } = platform;
@@ -56,10 +64,10 @@ const PlatformSection = (props: PlatformSectionProps): JSX.Element => {
     return (
       <ListItem
         button
-        style={{ paddingLeft: 32 }}
+        className={classes.pl4}
         dense
         component={Link}
-        to={`/${slug}/${moduleSlug}`}
+        to={`/platforms/${slug}/${moduleSlug}`}
         key={moduleSlug}
       >
         <ListItemText disableTypography>

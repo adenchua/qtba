@@ -54,8 +54,8 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
         <DialogTitle>New Question to Be Answered</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Building a data vizualisation product always start with a list of questions from the people that will be
-            using it. Think about the how, where, when, who, what and why.
+            Start with a list of questions from the people that will be using it. Think about the how, where, when, who,
+            what and why.
           </DialogContentText>
           <TextField
             autoFocus

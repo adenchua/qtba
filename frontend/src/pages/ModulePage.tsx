@@ -7,7 +7,7 @@ import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: "0px 8px",
     caretColor: theme.palette.primary.main,
   },
+  image: {
+    height: 380,
+    width: 380,
+  },
 }));
 
 const ModulePage = (): JSX.Element => {
@@ -46,8 +50,10 @@ const ModulePage = (): JSX.Element => {
   const [module, setModule] = useState<ModuleInterface | null>(null);
   const [questions, setQuestions] = useState<QuestionInterface[]>([]);
   const [showVoteCount, setShowVoteCount] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchFilter, setSearchFilter] = useState<string>("");
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
     const retrieveModuleFromSlug = async (): Promise<void> => {
@@ -58,10 +64,11 @@ const ModulePage = (): JSX.Element => {
       try {
         const response = await getModuleBySlug(moduleSlug);
         const { questions: questionIds } = response;
-        retrieveQuestionsFromModule(questionIds);
+        await retrieveQuestionsFromModule(questionIds);
         setModule(response);
+        setIsLoading(false);
       } catch (error) {
-        // do nothing
+        history.push("/");
       }
     };
 
@@ -75,7 +82,7 @@ const ModulePage = (): JSX.Element => {
     };
 
     retrieveModuleFromSlug();
-  }, [moduleSlug]);
+  }, [moduleSlug, history]);
 
   const handleAddQuestion = async (title: string): Promise<void> => {
     if (!module) {
@@ -178,6 +185,55 @@ const ModulePage = (): JSX.Element => {
     }
   };
 
+  const renderNoQuestionsContent = (): JSX.Element => (
+    <Box mt={4} display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+      <img src='/assets/add_question.svg' alt='add question' className={classes.image} />
+      <Typography variant='h4' gutterBottom>
+        Let's get started!
+      </Typography>
+      <Typography variant='body2' color='textSecondary'>
+        Start with a list of questions from the people that will be using it.
+      </Typography>
+      <Typography variant='body2' color='textSecondary' gutterBottom>
+        Think about the how, where, when, who, what and why.
+      </Typography>
+      <Box mt={1}>
+        <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
+      </Box>
+    </Box>
+  );
+
+  const renderTableWithHeader = (): JSX.Element => (
+    <Box mt={4}>
+      <Grid container justify='flex-end' alignItems='center' className={classes.mb2} spacing={1}>
+        <Grid item>
+          <Paper elevation={0} className={classes.inputWrapper}>
+            <InputBase placeholder='search' value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
+          </Paper>
+        </Grid>
+        <Grid item>
+          <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
+        </Grid>
+        <Grid item>
+          <TableKebabMenu
+            onToggleShowVoteCount={handleToggleShowVoteCount}
+            showVoteCount={showVoteCount}
+            onResetAllVotesHandler={handleResetAllQuestionVotes}
+          />
+        </Grid>
+      </Grid>
+      <QTBATable
+        searchFilter={searchFilter}
+        questions={questions}
+        onIncrementVoteHandler={handleIncrementVote}
+        onStrikethroughHandler={handleStikethroughQuestion}
+        onUnStrikethroughHandler={handleUnStikethroughQuestion}
+        onEditQuestionHandler={handleEditQuestion}
+        showVoteCount={showVoteCount}
+      />
+    </Box>
+  );
+
   return (
     <>
       <Navbar />
@@ -187,38 +243,8 @@ const ModulePage = (): JSX.Element => {
         <Typography variant='h4' color='textSecondary'>
           Questions to Be Answered
         </Typography>
-        <Box mt={4}>
-          <Grid container justify='flex-end' alignItems='center' className={classes.mb2} spacing={1}>
-            <Grid item>
-              <Paper elevation={0} className={classes.inputWrapper}>
-                <InputBase
-                  placeholder='search'
-                  value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
-                />
-              </Paper>
-            </Grid>
-            <Grid item>
-              <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
-            </Grid>
-            <Grid item>
-              <TableKebabMenu
-                onToggleShowVoteCount={handleToggleShowVoteCount}
-                showVoteCount={showVoteCount}
-                onResetAllVotesHandler={handleResetAllQuestionVotes}
-              />
-            </Grid>
-          </Grid>
-          <QTBATable
-            searchFilter={searchFilter}
-            questions={questions}
-            onIncrementVoteHandler={handleIncrementVote}
-            onStrikethroughHandler={handleStikethroughQuestion}
-            onUnStrikethroughHandler={handleUnStikethroughQuestion}
-            onEditQuestionHandler={handleEditQuestion}
-            showVoteCount={showVoteCount}
-          />
-        </Box>
+        {!isLoading && questions.length === 0 && renderNoQuestionsContent()}
+        {!isLoading && questions.length !== 0 && renderTableWithHeader()}
       </Container>
     </>
   );

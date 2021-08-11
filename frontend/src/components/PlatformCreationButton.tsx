@@ -4,7 +4,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import AddIcon from "@material-ui/icons/Add";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import AddIcon from "@material-ui/icons/AddCircleOutline";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 
@@ -34,9 +35,13 @@ const PlatformCreationButton = (props: PlatformCreationButtonProps): JSX.Element
       <IconButton size='small' edge='end' onClick={() => setIsDialogOpen(true)}>
         <AddIcon fontSize='small' />
       </IconButton>
-      <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='xs' fullWidth>
+      <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='sm' fullWidth>
         <DialogTitle>New Platform</DialogTitle>
         <DialogContent>
+          <DialogContentText>
+            A platform is a sub-system of the application you are building. Examples include inventory management,
+            human-resource and seller portal for an e-commerce application.
+          </DialogContentText>
           <TextField
             autoFocus
             margin='dense'

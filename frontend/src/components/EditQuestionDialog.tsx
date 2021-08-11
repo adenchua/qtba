@@ -3,7 +3,6 @@ import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 
@@ -28,13 +27,9 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onCloseHandler}>
+    <Dialog open={isOpen} onClose={onCloseHandler} maxWidth='sm' fullWidth>
       <DialogTitle>Edit Question</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Building a data vizualisation product always start with a list of questions from the people that will be using
-          it. Think about the how, where, when, who, what and why.
-        </DialogContentText>
         <TextField
           margin='dense'
           fullWidth
@@ -50,7 +45,7 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
       <DialogActions>
         <Button onClick={onCloseHandler}>Cancel</Button>
         <Button onClick={handleSubmit} color='primary'>
-          Update Question
+          Update
         </Button>
       </DialogActions>
     </Dialog>
