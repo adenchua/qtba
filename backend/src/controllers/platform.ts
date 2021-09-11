@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import Platform from "../models/platform";
-import getSlugFromTitle from "../utils/getSlugFromTitle";
+import cleanSlug from "../utils/cleanSlug";
 
 export async function createPlatform(req: Request, res: Response) {
   const { title } = req.body;
@@ -12,7 +12,7 @@ export async function createPlatform(req: Request, res: Response) {
   }
 
   try {
-    const slug = getSlugFromTitle(title);
+    const slug = cleanSlug(title);
     const newPlatform = new Platform({ title, slug });
     const result = await newPlatform.save();
     res.status(201).send(result);

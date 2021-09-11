@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import Module, { ModuleDocumentInterface } from "../models/module";
 import Question from "../models/question";
 import Platform from "../models/platform";
-import getSlugFromTitle from "../utils/getSlugFromTitle";
+import cleanSlug from "../utils/cleanSlug";
 import generateRandomString from "../utils/generateRandomString";
 
 async function doesModuleSlugExists(slug: string): Promise<boolean> {
@@ -23,9 +23,9 @@ export async function createModule(req: Request, res: Response) {
   }
 
   try {
-    let slug = getSlugFromTitle(title);
+    let slug = cleanSlug(title);
     while (await doesModuleSlugExists(slug)) {
-      slug = `${getSlugFromTitle(title)}-${generateRandomString(5)}`;
+      slug = `${cleanSlug(title)}-${generateRandomString(5)}`;
     }
     const newModule = new Module({ title, slug });
     const platform = await Platform.findById(platformId);
