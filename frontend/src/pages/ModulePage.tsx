@@ -69,7 +69,7 @@ const ModulePage = (): JSX.Element => {
         setModule(response);
         setIsLoading(false);
       } catch (error) {
-        history.push("/");
+        history.push("/error-page");
       }
     };
 
@@ -252,9 +252,7 @@ const ModulePage = (): JSX.Element => {
       <Sidebar />
       <Toolbar />
       <Container className={classes.container}>
-        <Typography variant='h4' color='textSecondary'>
-          Questions to Be Answered
-        </Typography>
+        <Typography variant='h5'>{`# ${module?.title}`}</Typography>
         {!isLoading && questions.length === 0 && renderNoQuestionsContent()}
         {!isLoading && questions.length !== 0 && renderTableWithHeader()}
       </Container>

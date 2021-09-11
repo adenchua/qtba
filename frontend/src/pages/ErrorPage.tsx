@@ -30,6 +30,7 @@ const ErrorPage = (): JSX.Element => {
           Bring me home
         </Button>
       </div>
+      <img src='/assets/404_page.svg' height='600px' alt='error' />
     </div>
   );
 };

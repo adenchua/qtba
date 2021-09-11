@@ -26,6 +26,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   mb2: {
     marginBottom: theme.spacing(2),
   },
+  platformWrapper: {
+    height: "calc(100vh - 156px)",
+    overflowY: "scroll",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    "&::-webkit-scrollbar": {
+      width: 0,
+      height: 0,
+    },
+  },
 }));
 
 const Sidebar = (): JSX.Element => {
@@ -57,7 +67,7 @@ const Sidebar = (): JSX.Element => {
   return (
     <Drawer variant='permanent' anchor='left'>
       <Paper className={classes.drawer} elevation={0} square>
-        <Box p={2}>
+        <Box p={2} height={70}>
           <Typography component={Link} to='/' className={classes.link}>
             🧱 Design Mondays
           </Typography>
@@ -66,15 +76,17 @@ const Sidebar = (): JSX.Element => {
           </Typography>
         </Box>
         <Divider />
-        <Box p={2} display='flex' alignItems='center' justifyContent='space-between' mb={4}>
+        <Box p={2} display='flex' alignItems='center' justifyContent='space-between' height={70}>
           <Typography variant='h6'>Platforms</Typography>
           <PlatformCreationButton createPlatformHandler={handleCreatePlatform} />
         </Box>
-        {platforms.map((platform: PlatformInterface) => (
-          <div key={platform._id} className={classes.mb2}>
-            <PlatformSection platform={platform} />
-          </div>
-        ))}
+        <div className={classes.platformWrapper}>
+          {platforms.map((platform: PlatformInterface) => (
+            <div key={platform._id} className={classes.mb2}>
+              <PlatformSection platform={platform} />
+            </div>
+          ))}
+        </div>
       </Paper>
     </Drawer>
   );
