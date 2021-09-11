@@ -15,9 +15,9 @@ services:
     depends_on:
       - mongodb
 
-  client:
-    container_name: client
+  nginx:
+    container_name: nginx
     build: ./frontend
     restart: always
     ports:
-      - 13000:3000
+      - 13000:80
