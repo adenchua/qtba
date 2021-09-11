@@ -4,7 +4,7 @@ export default function cleanSlug(str: string): string {
 }
 
 function removeSpecialCharacters(str: string): string {
-  return str.toLowerCase().replace(/[^A-Za-z ]/g, "");
+  return str.toLowerCase().replace(/[^A-Za-z- ]/g, "");
 }
 
 function changeSpacesToHyphen(str: string): string {

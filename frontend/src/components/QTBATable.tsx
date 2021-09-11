@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: "#F6F6F6",
   },
   tableHeaderRow: {
-    padding: "8px",
+    padding: "8px 8px 8px 16px",
     borderBottom: `2px solid ${theme.palette.divider}`,
   },
   tableHeaderText: {
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   tableBodyRowColumn: {
-    padding: "8px",
+    padding: "8px 8px 8px 16px",
   },
   strikethrough: {
     textDecoration: "line-through",
@@ -141,12 +141,12 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
                 {voteCount}
               </Typography>
             )}
-            {!showVoteCount && !votedQuestionIds.includes(questionId) && (
+            {!isStrikethrough && !showVoteCount && !votedQuestionIds.includes(questionId) && (
               <IconButton size='small' onClick={() => handleVoteQuestion(questionId)} disabled={isStrikethrough}>
                 <CheckCircleIcon fontSize='small' />
               </IconButton>
             )}
-            {!showVoteCount && votedQuestionIds.includes(questionId) && (
+            {!isStrikethrough && !showVoteCount && votedQuestionIds.includes(questionId) && (
               <IconButton size='small' onClick={() => handleUnvoteQuestion(questionId)}>
                 <CheckedCircleIcon fontSize='small' color='primary' />
               </IconButton>

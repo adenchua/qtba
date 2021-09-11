@@ -33,7 +33,8 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
     setQuestionInput("");
   };
 
-  const handleAddQuestion = async (): Promise<void> => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
     await onAddQuestionHandler(questionInput);
     handleClose();
   };
@@ -51,31 +52,31 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
         Add Question
       </Button>
       <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='sm' fullWidth>
-        <DialogTitle>New Question to Be Answered</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Start with a list of questions from the people that will be using it. Think about the how, where, when, who,
-            what and why.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            multiline
-            rows={3}
-            margin='dense'
-            placeholder='What causes our high employee attrition rates?'
-            fullWidth
-            inputProps={{ maxLength: QUESTIONS_MAX_LENGTH }}
-            value={questionInput}
-            onChange={(e) => setQuestionInput(e.target.value)}
-            helperText={`${QUESTIONS_MAX_LENGTH - questionInput.length} characters remaining`}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAddQuestion} color='primary' disabled={questionInput.length === 0}>
-            Add Question
-          </Button>
-        </DialogActions>
+        <form onSubmit={handleSubmit}>
+          <DialogTitle>New Question to Be Answered</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Start with a list of questions from the people that will be using it. Think about the how, where, when,
+              who, what and why.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin='dense'
+              placeholder='What causes our high employee attrition rates?'
+              fullWidth
+              inputProps={{ maxLength: QUESTIONS_MAX_LENGTH }}
+              value={questionInput}
+              onChange={(e) => setQuestionInput(e.target.value)}
+              helperText={`${QUESTIONS_MAX_LENGTH - questionInput.length} characters remaining`}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button color='primary' disabled={questionInput.length === 0} type='submit'>
+              Add Question
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   );

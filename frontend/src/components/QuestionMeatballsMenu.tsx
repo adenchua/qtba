@@ -99,7 +99,7 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
           </MenuItem>
         )}
         <MenuItem onClick={handleOpenDeleteDialog} dense>
-          <Typography variant='body2' color='error'>
+          <Typography variant='body2' color='secondary'>
             Delete question
           </Typography>
         </MenuItem>

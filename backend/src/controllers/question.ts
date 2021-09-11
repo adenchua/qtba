@@ -13,7 +13,8 @@ export async function createQuestion(req: Request, res: Response) {
   }
 
   try {
-    const newQuestion = new Question({ title, comment });
+    const trimmedTitle = title.trim();
+    const newQuestion = new Question({ title: trimmedTitle, comment });
     const module = await Module.findById(moduleId);
     if (!module) {
       throw Error("invalid module ID");
