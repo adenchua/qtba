@@ -25,6 +25,7 @@ import strikethroughQuestion from "../api/strikethroughQuestion";
 import unStrikethroughQuestion from "../api/unStrikethroughQuestion";
 import updateQuestion from "../api/updateQuestion";
 import resetModuleQuestionVotes from "../api/resetModuleQuestionVotes";
+import deleteQuestion from "../api/deleteQuestion";
 
 const useStyles = makeStyles((theme: Theme) => ({
   mb2: {
@@ -185,6 +186,16 @@ const ModulePage = (): JSX.Element => {
     }
   };
 
+  const handleDeleteQuestion = async (questionId: string): Promise<void> => {
+    try {
+      await deleteQuestion(questionId);
+      const filteredQuestions = questions.filter((question) => question._id !== questionId);
+      setQuestions(filteredQuestions);
+    } catch (error) {
+      // do nothing
+    }
+  };
+
   const renderNoQuestionsContent = (): JSX.Element => (
     <Box mt={4} display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
       <img src='/assets/add_question.svg' alt='add question' className={classes.image} />
@@ -229,6 +240,7 @@ const ModulePage = (): JSX.Element => {
         onStrikethroughHandler={handleStikethroughQuestion}
         onUnStrikethroughHandler={handleUnStikethroughQuestion}
         onEditQuestionHandler={handleEditQuestion}
+        onDeleteQuestionHandler={handleDeleteQuestion}
         showVoteCount={showVoteCount}
       />
     </Box>

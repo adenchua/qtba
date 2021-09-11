@@ -93,3 +93,20 @@ export async function increaseVote(req: Request, res: Response) {
     res.status(500).send();
   }
 }
+
+export async function deleteQuestion(req: Request, res: Response) {
+  const { questionId } = req.body;
+
+  if (!questionId) {
+    res.status(400).send();
+    return;
+  }
+
+  try {
+    await Question.findByIdAndDelete(questionId);
+    res.status(204).send();
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).send();
+  }
+}

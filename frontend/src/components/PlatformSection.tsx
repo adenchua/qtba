@@ -71,7 +71,7 @@ const PlatformSection = (props: PlatformSectionProps): JSX.Element => {
         key={moduleSlug}
       >
         <ListItemText disableTypography>
-          <Typography variant='body2' color={isModuleSelected(slug, moduleSlug) ? "primary" : "textSecondary"}>
+          <Typography variant='body2' color={isModuleSelected(slug, moduleSlug) ? "primary" : "textSecondary"} noWrap>
             {`# ${moduleTitle}`}
           </Typography>
         </ListItemText>

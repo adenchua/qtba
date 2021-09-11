@@ -55,6 +55,7 @@ interface QTBATableProps {
   onStrikethroughHandler: (questionId: string) => Promise<void>;
   onUnStrikethroughHandler: (questionId: string) => Promise<void>;
   onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
+  onDeleteQuestionHandler: (questionId: string) => Promise<void>;
   showVoteCount: boolean;
   searchFilter: string;
 }
@@ -67,6 +68,7 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
     onUnStrikethroughHandler,
     showVoteCount,
     onEditQuestionHandler,
+    onDeleteQuestionHandler,
     searchFilter,
   } = props;
   const classes = useStyles();
@@ -156,6 +158,7 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
               onUnStrikethroughHandler={onUnStrikethroughHandler}
               question={question}
               onEditQuestionHandler={onEditQuestionHandler}
+              onDeleteQuestionHandler={onDeleteQuestionHandler}
             />
           </td>
         </tr>

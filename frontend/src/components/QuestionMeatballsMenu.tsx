@@ -7,18 +7,22 @@ import Typography from "@material-ui/core/Typography";
 
 import QuestionInterface from "../types/QuestionInterface";
 import EditQuestionDialog from "./EditQuestionDialog";
+import DeleteQuestionDialog from "./DeleteQuestionDialog";
 
 interface QuestionMeatballsMenuProps {
   onStrikethroughHandler: (questionId: string) => Promise<void>;
   onUnStrikethroughHandler: (questionId: string) => Promise<void>;
   onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
+  onDeleteQuestionHandler: (questionId: string) => Promise<void>;
   question: QuestionInterface;
 }
 
 const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element => {
-  const { onStrikethroughHandler, onUnStrikethroughHandler, question, onEditQuestionHandler } = props;
+  const { onStrikethroughHandler, onUnStrikethroughHandler, question, onEditQuestionHandler, onDeleteQuestionHandler } =
+    props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const { _id: questionId, isStrikethrough } = question;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -43,8 +47,17 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
     setIsEditDialogOpen(false);
   };
 
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
   const handleOpenEditingDialog = () => {
     setIsEditDialogOpen(true);
+    handleClose();
+  };
+
+  const handleOpenDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
     handleClose();
   };
 
@@ -85,12 +98,23 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
             </Typography>
           </MenuItem>
         )}
+        <MenuItem onClick={handleOpenDeleteDialog} dense>
+          <Typography variant='body2' color='error'>
+            Delete question
+          </Typography>
+        </MenuItem>
       </Menu>
       <EditQuestionDialog
         question={question}
         isOpen={isEditDialogOpen}
         onCloseHandler={handleCloseEditingDialog}
         onConfirmEditHandler={onEditQuestionHandler}
+      />
+      <DeleteQuestionDialog
+        question={question}
+        isOpen={isDeleteDialogOpen}
+        onCloseHandler={handleCloseDeleteDialog}
+        onConfirmDeleteHandler={onDeleteQuestionHandler}
       />
     </>
   );
