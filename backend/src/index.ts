@@ -8,16 +8,17 @@ import questionRoute from "./routes/question";
 
 const app = express();
 const PORT = 5083;
-const URI = "mongodb://localhost:27017/designmondays";
+const URI = "mongodb://mongodb:27017/designmondays";
+const API_PREPEND = "/api";
 
 app.use(express.json());
 app.use(cors());
 
-app.use("/platforms", platformRoute);
-app.use("/modules", moduleRoute);
-app.use("/questions", questionRoute);
+app.use(`${API_PREPEND}/platforms`, platformRoute);
+app.use(`${API_PREPEND}/modules`, moduleRoute);
+app.use(`${API_PREPEND}/questions`, questionRoute);
 
-app.all("/ping", (req, res) => {
+app.all(`${API_PREPEND}/ping`, (req, res) => {
   res.status(200).send({ message: "pong" });
 });
 
