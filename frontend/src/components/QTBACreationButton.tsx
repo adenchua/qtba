@@ -1,22 +1,14 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import AddIcon from "@material-ui/icons/Add";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 import { QUESTIONS_MAX_LENGTH } from "../utils/constants";
-
-const useStyles = makeStyles(() => ({
-  button: {
-    textTransform: "none",
-    fontWeight: "bolder",
-  },
-}));
 
 interface QTBACreationButtonProps {
   onAddQuestionHandler: (title: string) => Promise<void>;
@@ -24,7 +16,6 @@ interface QTBACreationButtonProps {
 
 const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
   const { onAddQuestionHandler } = props;
-  const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [questionInput, setQuestionInput] = useState<string>("");
 
@@ -45,7 +36,6 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
         variant='contained'
         color='primary'
         disableElevation
-        className={classes.button}
         startIcon={<AddIcon />}
         onClick={() => setIsDialogOpen(true)}
       >
@@ -61,6 +51,7 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
             </DialogContentText>
             <TextField
               autoFocus
+              variant='standard'
               margin='dense'
               placeholder='What causes our high employee attrition rates?'
               fullWidth
@@ -71,7 +62,9 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose} color='inherit' sx={{ color: "GrayText" }}>
+              Cancel
+            </Button>
             <Button color='primary' disabled={questionInput.length === 0} type='submit'>
               Add Question
             </Button>

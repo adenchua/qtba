@@ -1,20 +1,10 @@
 import React from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
 
 import { DRAWER_WIDTH } from "../utils/constants";
-
-const useStyles = makeStyles((theme: Theme) => ({
-  appBar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
-    marginLeft: DRAWER_WIDTH,
-    background: theme.palette.background.paper,
-  },
-}));
 
 const capitalizeFirstLetter = (str: string): string => {
   return str[0].toUpperCase() + str.slice(1);
@@ -22,7 +12,6 @@ const capitalizeFirstLetter = (str: string): string => {
 
 const Navbar = (): JSX.Element => {
   const { moduleId } = useParams<{ moduleId: string | undefined }>();
-  const classes = useStyles();
 
   const convertLinkToTitle = (moduleLink: string | undefined): string => {
     if (!moduleLink) {
@@ -39,7 +28,17 @@ const Navbar = (): JSX.Element => {
   };
 
   return (
-    <AppBar position='fixed' className={classes.appBar} elevation={0}>
+    <AppBar
+      position='fixed'
+      elevation={0}
+      color='inherit'
+      sx={{
+        borderBottom: `1px solid`,
+        borderColor: "divider",
+        width: `calc(100% - ${DRAWER_WIDTH}px)`,
+        marginLeft: DRAWER_WIDTH,
+      }}
+    >
       <Toolbar variant='dense'>
         <Typography color='textPrimary'>{convertLinkToTitle(moduleId)}</Typography>
       </Toolbar>

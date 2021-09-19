@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from "react";
-import CheckCircleIcon from "@material-ui/icons/CheckCircleOutline";
-import CheckedCircleIcon from "@material-ui/icons/CheckCircle";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import CheckCircleIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckedCircleIcon from "@mui/icons-material/CheckCircle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material/styles";
 
 import QuestionMeatballsMenu from "./QuestionMeatballsMenu";
 import QuestionInterface from "../types/QuestionInterface";

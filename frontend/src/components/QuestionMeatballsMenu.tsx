@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import Typography from "@material-ui/core/Typography";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Typography from "@mui/material/Typography";
 
 import QuestionInterface from "../types/QuestionInterface";
 import EditQuestionDialog from "./EditQuestionDialog";
@@ -69,7 +69,6 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
       <Menu
         id='menu'
         anchorEl={anchorEl}
-        getContentAnchorEl={null}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
@@ -99,7 +98,7 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
           </MenuItem>
         )}
         <MenuItem onClick={handleOpenDeleteDialog} dense>
-          <Typography variant='body2' color='secondary'>
+          <Typography variant='body2' color='error'>
             Delete question
           </Typography>
         </MenuItem>

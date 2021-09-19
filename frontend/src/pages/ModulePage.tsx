@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Toolbar from "@material-ui/core/Toolbar";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import Paper from "@material-ui/core/Paper";
-import InputBase from "@material-ui/core/InputBase";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import InputBase from "@mui/material/InputBase";
 import { useParams, useHistory } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
@@ -27,25 +26,6 @@ import updateQuestion from "../api/updateQuestion";
 import resetModuleQuestionVotes from "../api/resetModuleQuestionVotes";
 import deleteQuestion from "../api/deleteQuestion";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  mb2: {
-    marginBottom: theme.spacing(2),
-  },
-  container: {
-    marginLeft: DRAWER_WIDTH,
-  },
-  inputWrapper: {
-    border: `1px solid ${theme.palette.divider}`,
-    height: 36,
-    padding: "0px 8px",
-    caretColor: theme.palette.primary.main,
-  },
-  image: {
-    height: 380,
-    width: 380,
-  },
-}));
-
 const ModulePage = (): JSX.Element => {
   const { moduleSlug } = useParams<{ moduleSlug: string | undefined }>();
   const [module, setModule] = useState<ModuleInterface | null>(null);
@@ -53,7 +33,6 @@ const ModulePage = (): JSX.Element => {
   const [showVoteCount, setShowVoteCount] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchFilter, setSearchFilter] = useState<string>("");
-  const classes = useStyles();
   const history = useHistory();
 
   useEffect(() => {
@@ -198,7 +177,7 @@ const ModulePage = (): JSX.Element => {
 
   const renderNoQuestionsContent = (): JSX.Element => (
     <Box mt={4} display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-      <img src='/assets/add_question.svg' alt='add question' className={classes.image} />
+      <img src='/assets/add_question.svg' alt='add question' height='380px' width='380px' />
       <Typography variant='h4' gutterBottom>
         Let's get started!
       </Typography>
@@ -216,9 +195,18 @@ const ModulePage = (): JSX.Element => {
 
   const renderTableWithHeader = (): JSX.Element => (
     <Box mt={4}>
-      <Grid container justify='flex-end' alignItems='center' className={classes.mb2} spacing={1}>
+      <Grid container justifyContent='flex-end' alignItems='center' mb={2} spacing='8px'>
         <Grid item>
-          <Paper elevation={0} className={classes.inputWrapper}>
+          <Paper
+            elevation={0}
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              height: "36px",
+              padding: "0px 8px",
+              caretColor: "primary.main",
+            }}
+          >
             <InputBase placeholder='search' value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
           </Paper>
         </Grid>
@@ -251,7 +239,7 @@ const ModulePage = (): JSX.Element => {
       <Navbar />
       <Sidebar />
       <Toolbar />
-      <Container className={classes.container}>
+      <Container sx={{ marginLeft: DRAWER_WIDTH }}>
         <Typography variant='h5'>{`# ${module?.title}`}</Typography>
         {!isLoading && questions.length === 0 && renderNoQuestionsContent()}
         {!isLoading && questions.length !== 0 && renderTableWithHeader()}

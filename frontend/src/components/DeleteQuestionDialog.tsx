@@ -1,15 +1,15 @@
 import React from "react";
-import Dialog from "@material-ui/core/Dialog";
-import Typography from "@material-ui/core/Typography";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import WarningIcon from "@material-ui/icons/WarningOutlined";
+import Dialog from "@mui/material/Dialog";
+import Typography from "@mui/material/Typography";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import WarningIcon from "@mui/icons-material/WarningOutlined";
 
 import QuestionInterface from "../types/QuestionInterface";
-import { Box } from "@material-ui/core";
 
 interface DeleteQuestionDialogProps {
   isOpen: boolean;
@@ -29,10 +29,10 @@ const DeleteQuestionDialog = (props: DeleteQuestionDialogProps): JSX.Element => 
 
   return (
     <Dialog open={isOpen} onClose={onCloseHandler} maxWidth='sm' fullWidth>
-      <DialogTitle disableTypography>
-        <Box display='flex' alignItems='center' gridGap={8}>
-          <WarningIcon color='secondary' />
-          <Typography variant='h6' color='secondary'>
+      <DialogTitle>
+        <Box display='flex' alignItems='center' gap={1}>
+          <WarningIcon color='error' />
+          <Typography variant='h6' color='error'>
             Are you sure you want to delete this question?
           </Typography>
         </Box>
@@ -41,8 +41,10 @@ const DeleteQuestionDialog = (props: DeleteQuestionDialogProps): JSX.Element => 
         <DialogContentText>{title}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCloseHandler}>Cancel</Button>
-        <Button onClick={handleSubmit} color='secondary'>
+        <Button onClick={onCloseHandler} color='inherit' sx={{ color: "GrayText" }}>
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color='error'>
           Delete
         </Button>
       </DialogActions>

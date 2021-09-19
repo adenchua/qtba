@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
 
 import QuestionInterface from "../types/QuestionInterface";
 import { QUESTIONS_MAX_LENGTH } from "../utils/constants";
@@ -32,6 +32,7 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
       <DialogContent>
         <TextField
           margin='dense'
+          variant='standard'
           fullWidth
           autoFocus
           multiline
@@ -43,7 +44,9 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCloseHandler}>Cancel</Button>
+        <Button onClick={onCloseHandler} color='inherit' sx={{ color: "GrayText" }}>
+          Cancel
+        </Button>
         <Button onClick={handleSubmit} color='primary'>
           Update
         </Button>
