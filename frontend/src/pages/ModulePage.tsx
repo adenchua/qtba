@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Toolbar from "@mui/material/Toolbar";
-import Container from "@mui/material/Container";
+import React, { useEffect, useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -8,28 +6,20 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import { useParams, useHistory } from "react-router-dom";
 
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import PageLayoutWrapper from "./PageLayoutWrapper";
 import QTBACreationButton from "../components/QTBACreationButton";
 import TableKebabMenu from "../components/TableKebabMenu";
 import QTBATable from "../components/QTBATable";
-import { DRAWER_WIDTH } from "../utils/constants";
 import getModuleBySlug from "../api/getModuleBySlug";
 import ModuleInterface from "../types/ModuleInterface";
-import QuestionInterface from "../types/QuestionInterface";
 import getModuleQuestions from "../api/getModuleQuestions";
-import addQuestionToModule from "../api/addQuestionToModule";
-import incrementQuestionVote from "../api/incrementQuestionVote";
-import strikethroughQuestion from "../api/strikethroughQuestion";
-import unStrikethroughQuestion from "../api/unStrikethroughQuestion";
-import updateQuestion from "../api/updateQuestion";
 import resetModuleQuestionVotes from "../api/resetModuleQuestionVotes";
-import deleteQuestion from "../api/deleteQuestion";
+import { QuestionsContext } from "../components/QuestionsContextProvider";
 
 const ModulePage = (): JSX.Element => {
+  const { questions, setQuestions, resetAllQuestionVotes } = useContext(QuestionsContext);
   const { moduleSlug } = useParams<{ moduleSlug: string | undefined }>();
   const [module, setModule] = useState<ModuleInterface | null>(null);
-  const [questions, setQuestions] = useState<QuestionInterface[]>([]);
   const [showVoteCount, setShowVoteCount] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchFilter, setSearchFilter] = useState<string>("");
@@ -62,89 +52,10 @@ const ModulePage = (): JSX.Element => {
     };
 
     retrieveModuleFromSlug();
-  }, [moduleSlug, history]);
-
-  const handleAddQuestion = async (title: string): Promise<void> => {
-    if (!module) {
-      return;
-    }
-
-    try {
-      const { _id: moduleId } = module;
-      const newQuestion = await addQuestionToModule(title, moduleId);
-      setQuestions((prevState) => [...prevState, newQuestion]);
-    } catch (error) {
-      // do nothing
-    }
-  };
-
-  const handleIncrementVote = async (questionId: string): Promise<void> => {
-    try {
-      const updatedQuestion = await incrementQuestionVote(questionId);
-      const { _id: updatedQuestionId, voteCount: updatedQuestionVoteCount } = updatedQuestion;
-      setQuestions((prevState) =>
-        prevState.map((question) => {
-          if (question._id === updatedQuestionId) {
-            question.voteCount = updatedQuestionVoteCount;
-          }
-          return question;
-        })
-      );
-    } catch (error) {
-      // do nothing
-    }
-  };
-
-  const handleStikethroughQuestion = async (questionId: string): Promise<void> => {
-    try {
-      await strikethroughQuestion(questionId);
-      setQuestions((prevState) =>
-        prevState.map((question) => {
-          if (question._id === questionId) {
-            question.isStrikethrough = true;
-          }
-          return question;
-        })
-      );
-    } catch (error) {
-      // do nothing
-    }
-  };
-
-  const handleUnStikethroughQuestion = async (questionId: string): Promise<void> => {
-    try {
-      await unStrikethroughQuestion(questionId);
-      setQuestions((prevState) =>
-        prevState.map((question) => {
-          if (question._id === questionId) {
-            question.isStrikethrough = false;
-          }
-          return question;
-        })
-      );
-    } catch (error) {
-      // do nothing
-    }
-  };
+  }, [moduleSlug, history, setQuestions]);
 
   const handleToggleShowVoteCount = (newState: boolean): void => {
     setShowVoteCount(newState);
-  };
-
-  const handleEditQuestion = async (updatedQuestionTitle: string, questionId: string): Promise<void> => {
-    try {
-      await updateQuestion(updatedQuestionTitle, questionId);
-      setQuestions((prevState) =>
-        prevState.map((question) => {
-          if (question._id === questionId) {
-            question.title = updatedQuestionTitle;
-          }
-          return question;
-        })
-      );
-    } catch (error) {
-      // do nothing
-    }
   };
 
   const handleResetAllQuestionVotes = async (): Promise<void> => {
@@ -154,22 +65,7 @@ const ModulePage = (): JSX.Element => {
     const { _id: moduleId } = module;
     try {
       await resetModuleQuestionVotes(moduleId);
-      setQuestions((prevState) =>
-        prevState.map((question) => {
-          question.voteCount = 0;
-          return question;
-        })
-      );
-    } catch (error) {
-      // do nothing
-    }
-  };
-
-  const handleDeleteQuestion = async (questionId: string): Promise<void> => {
-    try {
-      await deleteQuestion(questionId);
-      const filteredQuestions = questions.filter((question) => question._id !== questionId);
-      setQuestions(filteredQuestions);
+      resetAllQuestionVotes();
     } catch (error) {
       // do nothing
     }
@@ -188,7 +84,7 @@ const ModulePage = (): JSX.Element => {
         Think about the how, where, when, who, what and why.
       </Typography>
       <Box mt={1}>
-        <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
+        <QTBACreationButton module={module} />
       </Box>
     </Box>
   );
@@ -211,7 +107,7 @@ const ModulePage = (): JSX.Element => {
           </Paper>
         </Grid>
         <Grid item>
-          <QTBACreationButton onAddQuestionHandler={handleAddQuestion} />
+          <QTBACreationButton module={module} />
         </Grid>
         <Grid item>
           <TableKebabMenu
@@ -221,30 +117,16 @@ const ModulePage = (): JSX.Element => {
           />
         </Grid>
       </Grid>
-      <QTBATable
-        searchFilter={searchFilter}
-        questions={questions}
-        onIncrementVoteHandler={handleIncrementVote}
-        onStrikethroughHandler={handleStikethroughQuestion}
-        onUnStrikethroughHandler={handleUnStikethroughQuestion}
-        onEditQuestionHandler={handleEditQuestion}
-        onDeleteQuestionHandler={handleDeleteQuestion}
-        showVoteCount={showVoteCount}
-      />
+      <QTBATable searchFilter={searchFilter} showVoteCount={showVoteCount} />
     </Box>
   );
 
   return (
-    <>
-      <Navbar />
-      <Sidebar />
-      <Toolbar />
-      <Container sx={{ marginLeft: DRAWER_WIDTH }}>
-        <Typography variant='h5'>{`# ${module?.title}`}</Typography>
-        {!isLoading && questions.length === 0 && renderNoQuestionsContent()}
-        {!isLoading && questions.length !== 0 && renderTableWithHeader()}
-      </Container>
-    </>
+    <PageLayoutWrapper>
+      <Typography variant='h5'>{`# ${module?.title}`}</Typography>
+      {!isLoading && questions.length === 0 && renderNoQuestionsContent()}
+      {!isLoading && questions.length !== 0 && renderTableWithHeader()}
+    </PageLayoutWrapper>
   );
 };
 

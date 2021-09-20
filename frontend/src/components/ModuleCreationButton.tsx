@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,14 +9,17 @@ import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 
-const CAPABILITY_MAX_LENGTH = 24;
+import addModuleToPlatform from "../api/addModuleToPlatform";
+import { PlatformsContext } from "./PlatformsContextProvider";
+import { MODULE_MAX_LENGTH } from "../utils/constants";
 
 interface ModuleCreationButtonProps {
-  addModuleHandler: (moduleTitle: string) => Promise<void>;
+  platformId: string;
 }
 
 const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => {
-  const { addModuleHandler } = props;
+  const { platformId } = props;
+  const { addModuleToPlatform: addModuleToPlatformInContext } = useContext(PlatformsContext);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [moduleInput, setModuleInput] = useState<string>("");
 
@@ -26,7 +29,8 @@ const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => 
   };
 
   const handleAddModule = async (): Promise<void> => {
-    await addModuleHandler(moduleInput);
+    const newModule = await addModuleToPlatform(moduleInput, platformId);
+    addModuleToPlatformInContext(newModule, platformId);
     handleClose();
   };
 
@@ -47,10 +51,10 @@ const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => 
               startAdornment: <InputAdornment position='start'>#</InputAdornment>,
             }}
             fullWidth
-            inputProps={{ maxLength: CAPABILITY_MAX_LENGTH }}
+            inputProps={{ maxLength: MODULE_MAX_LENGTH }}
             value={moduleInput}
             onChange={(e) => setModuleInput(e.target.value)}
-            helperText={`${CAPABILITY_MAX_LENGTH - moduleInput.length} characters remaining`}
+            helperText={`${MODULE_MAX_LENGTH - moduleInput.length} characters remaining`}
           />
         </DialogContent>
         <DialogActions>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
@@ -8,18 +8,17 @@ import Typography from "@mui/material/Typography";
 import QuestionInterface from "../types/QuestionInterface";
 import EditQuestionDialog from "./EditQuestionDialog";
 import DeleteQuestionDialog from "./DeleteQuestionDialog";
+import strikethroughQuestion from "../api/strikethroughQuestion";
+import { QuestionsContext } from "./QuestionsContextProvider";
+import unStrikethroughQuestion from "../api/unStrikethroughQuestion";
 
 interface QuestionMeatballsMenuProps {
-  onStrikethroughHandler: (questionId: string) => Promise<void>;
-  onUnStrikethroughHandler: (questionId: string) => Promise<void>;
-  onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
-  onDeleteQuestionHandler: (questionId: string) => Promise<void>;
   question: QuestionInterface;
 }
 
 const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element => {
-  const { onStrikethroughHandler, onUnStrikethroughHandler, question, onEditQuestionHandler, onDeleteQuestionHandler } =
-    props;
+  const { editQuestion } = useContext(QuestionsContext);
+  const { question } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
@@ -33,13 +32,19 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
     setAnchorEl(null);
   };
 
-  const handleStrikethrough = () => {
-    onStrikethroughHandler(questionId);
+  const handleStrikethrough = async () => {
+    await strikethroughQuestion(questionId);
+    const updatedQuestion = question;
+    updatedQuestion.isStrikethrough = true;
+    editQuestion(updatedQuestion);
     handleClose();
   };
 
-  const handleUnStikethroughQuestion = () => {
-    onUnStrikethroughHandler(questionId);
+  const handleUnStikethroughQuestion = async () => {
+    await unStrikethroughQuestion(questionId);
+    const updatedQuestion = question;
+    updatedQuestion.isStrikethrough = false;
+    editQuestion(updatedQuestion);
     handleClose();
   };
 
@@ -103,18 +108,8 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
           </Typography>
         </MenuItem>
       </Menu>
-      <EditQuestionDialog
-        question={question}
-        isOpen={isEditDialogOpen}
-        onCloseHandler={handleCloseEditingDialog}
-        onConfirmEditHandler={onEditQuestionHandler}
-      />
-      <DeleteQuestionDialog
-        question={question}
-        isOpen={isDeleteDialogOpen}
-        onCloseHandler={handleCloseDeleteDialog}
-        onConfirmDeleteHandler={onDeleteQuestionHandler}
-      />
+      <EditQuestionDialog isOpen={isEditDialogOpen} onCloseHandler={handleCloseEditingDialog} question={question} />
+      <DeleteQuestionDialog isOpen={isDeleteDialogOpen} onCloseHandler={handleCloseDeleteDialog} question={question} />
     </>
   );
 };

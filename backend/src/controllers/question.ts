@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import Question, { QuestionDocumentInterface } from "../models/question";
 import Module from "../models/module";
-import { removeUndefinedKeysFromObject } from "../utils/removeUndefinedKeysFromObject";
+import removeUndefinedKeysFromObject from "../utils/removeUndefinedKeysFromObject";
 
 export async function createQuestion(req: Request, res: Response) {
   const { moduleId, title, comment = "" } = req.body;

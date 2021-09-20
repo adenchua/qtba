@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -6,19 +6,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContentText from "@mui/material/DialogContentText";
 import AddIcon from "@mui/icons-material/AddCircleOutline";
-import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 
-const PLATFORM_MAX_LENGTH = 16;
+import addPlatform from "../api/addPlatform";
+import { PLATFORM_MAX_LENGTH } from "../utils/constants";
+import { PlatformsContext } from "./PlatformsContextProvider";
 
-interface PlatformCreationButtonProps {
-  createPlatformHandler: (platformTitle: string) => Promise<void>;
-}
-
-const PlatformCreationButton = (props: PlatformCreationButtonProps): JSX.Element => {
-  const { createPlatformHandler } = props;
+const PlatformCreationButton = (): JSX.Element => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [platformInput, setPlatformInput] = useState<string>("");
+  const { addPlatform: addPlatformInContext } = useContext(PlatformsContext);
 
   const handleClose = (): void => {
     setIsDialogOpen(false);
@@ -26,15 +23,16 @@ const PlatformCreationButton = (props: PlatformCreationButtonProps): JSX.Element
   };
 
   const handleCreatePlatform = async (): Promise<void> => {
-    await createPlatformHandler(platformInput);
+    const newPlatform = await addPlatform(platformInput);
+    addPlatformInContext(newPlatform);
     handleClose();
   };
 
   return (
     <>
-      <IconButton size='small' edge='end' onClick={() => setIsDialogOpen(true)}>
-        <AddIcon fontSize='small' />
-      </IconButton>
+      <Button size='large' onClick={() => setIsDialogOpen(true)} startIcon={<AddIcon />}>
+        Create Platform
+      </Button>
       <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='sm' fullWidth>
         <DialogTitle>New Platform</DialogTitle>
         <DialogContent>
@@ -46,7 +44,7 @@ const PlatformCreationButton = (props: PlatformCreationButtonProps): JSX.Element
             autoFocus
             variant='standard'
             margin='dense'
-            label='Platform Name'
+            label='Platform'
             fullWidth
             inputProps={{ maxLength: PLATFORM_MAX_LENGTH }}
             value={platformInput}

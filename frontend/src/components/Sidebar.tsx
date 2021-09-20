@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Drawer from "@mui/material/Drawer";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -12,22 +12,29 @@ import { VERSION_NUMBER, DRAWER_WIDTH } from "../utils/constants";
 import PlatformInterface from "../types/PlatformInterface";
 import PlatformSection from "./PlatformSection";
 import getPlatforms from "../api/getPlatforms";
+import getPlatformModules from "../api/getPlatformModules";
+import { PlatformsContext } from "./PlatformsContextProvider";
 
 const Sidebar = (): JSX.Element => {
-  const [platforms, setPlatforms] = useState<PlatformInterface[]>([]);
+  const { platforms, setPlatforms } = useContext(PlatformsContext);
 
   useEffect(() => {
     const retrievePlatforms = async (): Promise<void> => {
       try {
-        const response = await getPlatforms();
-        setPlatforms(response);
+        const platforms = await getPlatforms();
+        for (const platform of platforms) {
+          const { modules: moduleIds } = platform;
+          const modules = await getPlatformModules(moduleIds);
+          platform.platformModules = modules;
+        }
+        setPlatforms(platforms); // set it in the store
       } catch (error) {
         // do nothing
       }
     };
 
     retrievePlatforms();
-  }, []);
+  }, [setPlatforms]);
 
   return (
     <Drawer variant='permanent' anchor='left'>

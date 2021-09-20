@@ -17,6 +17,15 @@ let theme = createTheme({
       fontWeight: "bold",
     },
   },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableRipple: true,
+        disableFocusRipple: true,
+        disableTouchRipple: true,
+      },
+    },
+  },
 });
 
 theme = responsiveFontSizes(theme);
