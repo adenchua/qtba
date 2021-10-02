@@ -4,7 +4,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import DialogContentText from "@mui/material/DialogContentText";
 import AddIcon from "@mui/icons-material/AddCircleOutline";
 import Button from "@mui/material/Button";
 
@@ -23,9 +22,14 @@ const PlatformCreationButton = (): JSX.Element => {
   };
 
   const handleCreatePlatform = async (): Promise<void> => {
-    const newPlatform = await addPlatform(platformInput);
-    addPlatformInContext(newPlatform);
-    handleClose();
+    try {
+      const newPlatform = await addPlatform(platformInput);
+      addPlatformInContext(newPlatform);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      handleClose();
+    }
   };
 
   return (
@@ -36,20 +40,16 @@ const PlatformCreationButton = (): JSX.Element => {
       <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='sm' fullWidth>
         <DialogTitle>New Platform</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            A platform is a sub-system of the application you are building. Examples include inventory management,
-            human-resource and seller portal for an e-commerce application.
-          </DialogContentText>
           <TextField
             autoFocus
             variant='standard'
             margin='dense'
             label='Platform'
+            placeholder='Inventory Management System'
             fullWidth
             inputProps={{ maxLength: PLATFORM_MAX_LENGTH }}
             value={platformInput}
             onChange={(e) => setPlatformInput(e.target.value)}
-            helperText={`${PLATFORM_MAX_LENGTH - platformInput.length} characters remaining`}
           />
         </DialogContent>
         <DialogActions>

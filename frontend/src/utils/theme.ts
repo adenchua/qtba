@@ -24,6 +24,11 @@ let theme = createTheme({
         disableFocusRipple: true,
         disableTouchRipple: true,
       },
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+        },
+      },
     },
   },
 });

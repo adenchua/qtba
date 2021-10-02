@@ -41,11 +41,16 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
   };
 
   const handleUnStikethroughQuestion = async () => {
-    await unStrikethroughQuestion(questionId);
-    const updatedQuestion = question;
-    updatedQuestion.isStrikethrough = false;
-    editQuestion(updatedQuestion);
-    handleClose();
+    try {
+      await unStrikethroughQuestion(questionId);
+      const updatedQuestion = question;
+      updatedQuestion.isStrikethrough = false;
+      editQuestion(updatedQuestion);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      handleClose();
+    }
   };
 
   const handleCloseEditingDialog = () => {

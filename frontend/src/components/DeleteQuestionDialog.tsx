@@ -25,9 +25,14 @@ const DeleteQuestionDialog = (props: DeleteQuestionDialogProps): JSX.Element => 
   const { title, _id: questionId } = question;
 
   const handleSubmit = async (): Promise<void> => {
-    await deleteQuestion(questionId);
-    deleteQuestionInContext(questionId);
-    onCloseHandler();
+    try {
+      await deleteQuestion(questionId);
+      deleteQuestionInContext(questionId);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      onCloseHandler();
+    }
   };
 
   return (

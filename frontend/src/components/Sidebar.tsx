@@ -29,7 +29,7 @@ const Sidebar = (): JSX.Element => {
         }
         setPlatforms(platforms); // set it in the store
       } catch (error) {
-        // do nothing
+        alert("Sorry, something went wrong. Please try again later.");
       }
     };
 

@@ -29,9 +29,14 @@ const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => 
   };
 
   const handleAddModule = async (): Promise<void> => {
-    const newModule = await addModuleToPlatform(moduleInput, platformId);
-    addModuleToPlatformInContext(newModule, platformId);
-    handleClose();
+    try {
+      const newModule = await addModuleToPlatform(moduleInput, platformId);
+      addModuleToPlatformInContext(newModule, platformId);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later");
+    } finally {
+      handleClose();
+    }
   };
 
   return (
@@ -54,7 +59,6 @@ const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => 
             inputProps={{ maxLength: MODULE_MAX_LENGTH }}
             value={moduleInput}
             onChange={(e) => setModuleInput(e.target.value)}
-            helperText={`${MODULE_MAX_LENGTH - moduleInput.length} characters remaining`}
           />
         </DialogContent>
         <DialogActions>

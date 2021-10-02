@@ -25,9 +25,14 @@ const EditModuleDialog = (props: EditModuleDialogProps): JSX.Element => {
   const [moduleTitleInput, setModuleTitleInput] = useState<string>(title);
 
   const handleSubmit = async (): Promise<void> => {
-    await updateModuleTitle(moduleId, moduleTitleInput);
-    updateModuleTitleInContext(moduleId, platformId, moduleTitleInput);
-    onCloseHandler();
+    try {
+      await updateModuleTitle(moduleId, moduleTitleInput);
+      updateModuleTitleInContext(moduleId, platformId, moduleTitleInput);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      onCloseHandler();
+    }
   };
 
   const handleClose = () => {
@@ -47,7 +52,6 @@ const EditModuleDialog = (props: EditModuleDialogProps): JSX.Element => {
             startAdornment: <InputAdornment position='start'>#</InputAdornment>,
           }}
           inputProps={{ maxLength: MODULE_MAX_LENGTH }}
-          helperText={`${MODULE_MAX_LENGTH - moduleTitleInput.length} characters remaining`}
           value={moduleTitleInput}
           onChange={(e) => setModuleTitleInput(e.target.value)}
         />
@@ -57,7 +61,7 @@ const EditModuleDialog = (props: EditModuleDialogProps): JSX.Element => {
           Cancel
         </Button>
         <Button onClick={handleSubmit} color='primary' disabled={moduleTitleInput.length === 0}>
-          Update
+          Update Module
         </Button>
       </DialogActions>
     </Dialog>

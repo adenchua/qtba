@@ -26,9 +26,14 @@ const DeleteModuleDialog = (props: DeleteModuleDialogProps): JSX.Element => {
   const { deleteModuleFromPlatform } = useContext(PlatformsContext);
 
   const handleSubmit = async (): Promise<void> => {
-    await deleteModule(moduleId);
-    deleteModuleFromPlatform(moduleId, platformId);
-    onCloseHandler();
+    try {
+      await deleteModule(moduleId);
+      deleteModuleFromPlatform(moduleId, platformId);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      onCloseHandler();
+    }
   };
 
   return (

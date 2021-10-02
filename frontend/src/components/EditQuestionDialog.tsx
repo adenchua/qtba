@@ -23,11 +23,16 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
   const [questionTitleInput, setQuestionTitleInput] = useState<string>(title);
 
   const handleSubmit = async (): Promise<void> => {
-    await updateQuestion(questionTitleInput, questionId);
-    const updatedQuestion = question;
-    updatedQuestion.title = questionTitleInput;
-    editQuestionInContext(updatedQuestion);
-    onCloseHandler();
+    try {
+      await updateQuestion(questionTitleInput, questionId);
+      const updatedQuestion = question;
+      updatedQuestion.title = questionTitleInput;
+      editQuestionInContext(updatedQuestion);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      onCloseHandler();
+    }
   };
 
   const handleClose = () => {
@@ -46,7 +51,6 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
           multiline
           rows={3}
           inputProps={{ maxLength: QUESTIONS_MAX_LENGTH }}
-          helperText={`${QUESTIONS_MAX_LENGTH - questionTitleInput.length} characters remaining`}
           value={questionTitleInput}
           onChange={(e) => setQuestionTitleInput(e.target.value)}
         />
@@ -56,7 +60,7 @@ const EditQuestionDialog = (props: EditQuestionDialogProps): JSX.Element => {
           Cancel
         </Button>
         <Button onClick={handleSubmit} color='primary' disabled={questionTitleInput.length === 0}>
-          Update
+          Update Question
         </Button>
       </DialogActions>
     </Dialog>

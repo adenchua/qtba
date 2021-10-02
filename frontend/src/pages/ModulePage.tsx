@@ -99,8 +99,9 @@ const ModulePage = (): JSX.Element => {
               border: "1px solid",
               borderColor: "divider",
               height: "36px",
-              padding: "0px 8px",
+              padding: "2px 8px",
               caretColor: "primary.main",
+              borderRadius: 0,
             }}
           >
             <InputBase placeholder='search' value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />

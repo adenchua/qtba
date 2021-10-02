@@ -34,9 +34,14 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
     }
     event.preventDefault();
     const { _id: moduleId } = module;
-    const newQuestion = await addQuestionToModule(questionInput, moduleId);
-    addQuestion(newQuestion);
-    handleClose();
+    try {
+      const newQuestion = await addQuestionToModule(questionInput, moduleId);
+      addQuestion(newQuestion);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      handleClose();
+    }
   };
 
   return (
@@ -62,12 +67,11 @@ const QTBACreationButton = (props: QTBACreationButtonProps): JSX.Element => {
               autoFocus
               variant='standard'
               margin='dense'
-              placeholder='What causes our high employee attrition rates?'
+              placeholder='What is the change in employee attrition rates over the years?'
               fullWidth
               inputProps={{ maxLength: QUESTIONS_MAX_LENGTH }}
               value={questionInput}
               onChange={(e) => setQuestionInput(e.target.value)}
-              helperText={`${QUESTIONS_MAX_LENGTH - questionInput.length} characters remaining`}
             />
           </DialogContent>
           <DialogActions>

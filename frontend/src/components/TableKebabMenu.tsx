@@ -60,16 +60,6 @@ const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
             Reset votes
           </Typography>
         </MenuItem>
-        <MenuItem onClick={handleClose} dense disabled>
-          <Typography variant='body2' color='primary'>
-            Disable voting
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={handleClose} dense disabled>
-          <Typography variant='body2' color='primary'>
-            Export as csv
-          </Typography>
-        </MenuItem>
       </Menu>
     </>
   );

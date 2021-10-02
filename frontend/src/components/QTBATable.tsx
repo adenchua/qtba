@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "inline-block",
     minWidth: "100%",
     border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 4,
   },
   table: {
     width: "100%",
@@ -67,9 +66,14 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
     if (votedQuestionIds.includes(questionId)) {
       return; // already in vote
     }
-    const updatedQuestion = await incrementQuestionVote(questionId);
-    editQuestion(updatedQuestion);
-    setVotedQuestionIds((prevState) => [...prevState, questionId]);
+
+    try {
+      const updatedQuestion = await incrementQuestionVote(questionId);
+      editQuestion(updatedQuestion);
+      setVotedQuestionIds((prevState) => [...prevState, questionId]);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    }
   };
 
   const handleUnvoteQuestion = (questionId: string): void => {
