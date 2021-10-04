@@ -1,19 +1,21 @@
-import React, { useState, useCallback } from "react";
-import CheckCircleIcon from "@material-ui/icons/CheckCircleOutline";
-import CheckedCircleIcon from "@material-ui/icons/CheckCircle";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import React, { useState, useCallback, useContext } from "react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckedCircleIcon from "@mui/icons-material/CheckCircle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material/styles";
 
 import QuestionMeatballsMenu from "./QuestionMeatballsMenu";
 import QuestionInterface from "../types/QuestionInterface";
+import { QuestionsContext } from "./QuestionsContextProvider";
+import incrementQuestionVote from "../api/incrementQuestionVote";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: "inline-block",
     minWidth: "100%",
     border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 4,
   },
   table: {
     width: "100%",
@@ -50,27 +52,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface QTBATableProps {
-  questions: QuestionInterface[];
-  onIncrementVoteHandler: (questionId: string) => Promise<void>;
-  onStrikethroughHandler: (questionId: string) => Promise<void>;
-  onUnStrikethroughHandler: (questionId: string) => Promise<void>;
-  onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
-  onDeleteQuestionHandler: (questionId: string) => Promise<void>;
   showVoteCount: boolean;
   searchFilter: string;
 }
 
 const QTBATable = (props: QTBATableProps): JSX.Element => {
-  const {
-    questions,
-    onIncrementVoteHandler,
-    onStrikethroughHandler,
-    onUnStrikethroughHandler,
-    showVoteCount,
-    onEditQuestionHandler,
-    onDeleteQuestionHandler,
-    searchFilter,
-  } = props;
+  const { showVoteCount, searchFilter } = props;
+  const { questions, editQuestion } = useContext(QuestionsContext);
   const classes = useStyles();
   const [votedQuestionIds, setVotedQuestionIds] = useState<string[]>([]);
 
@@ -78,8 +66,14 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
     if (votedQuestionIds.includes(questionId)) {
       return; // already in vote
     }
-    await onIncrementVoteHandler(questionId);
-    setVotedQuestionIds((prevState) => [...prevState, questionId]);
+
+    try {
+      const updatedQuestion = await incrementQuestionVote(questionId);
+      editQuestion(updatedQuestion);
+      setVotedQuestionIds((prevState) => [...prevState, questionId]);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    }
   };
 
   const handleUnvoteQuestion = (questionId: string): void => {
@@ -153,13 +147,7 @@ const QTBATable = (props: QTBATableProps): JSX.Element => {
             )}
           </td>
           <td className={classes.tableBodyRowColumn}>
-            <QuestionMeatballsMenu
-              onStrikethroughHandler={onStrikethroughHandler}
-              onUnStrikethroughHandler={onUnStrikethroughHandler}
-              question={question}
-              onEditQuestionHandler={onEditQuestionHandler}
-              onDeleteQuestionHandler={onDeleteQuestionHandler}
-            />
+            <QuestionMeatballsMenu question={question} />
           </td>
         </tr>
       );

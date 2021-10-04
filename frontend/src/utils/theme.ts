@@ -1,14 +1,34 @@
-import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
-import blue from "@material-ui/core/colors/blue";
-import red from "@material-ui/core/colors/red";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+import { blue, red } from "@mui/material/colors";
 
-let theme = createMuiTheme({
+let theme = createTheme({
   palette: {
     primary: {
       main: blue[800],
     },
     secondary: {
       main: red[800],
+    },
+    background: { default: "#FAFAFA" },
+  },
+  typography: {
+    button: {
+      textTransform: "none",
+      fontWeight: "bold",
+    },
+  },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableRipple: true,
+        disableFocusRipple: true,
+        disableTouchRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+        },
+      },
     },
   },
 });

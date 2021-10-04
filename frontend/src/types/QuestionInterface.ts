@@ -1,4 +1,4 @@
-export default interface PlatformInterface {
+export default interface QuestionInterface {
   _id: string;
   title: string;
   createdDate: string;

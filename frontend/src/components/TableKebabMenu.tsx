@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 
 interface TableKebabMenuProps {
   onToggleShowVoteCount: (newState: boolean) => void;
@@ -41,7 +41,6 @@ const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
       <Menu
         id='menu'
         anchorEl={anchorEl}
-        getContentAnchorEl={null}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
@@ -59,16 +58,6 @@ const TableKebabMenu = (props: TableKebabMenuProps): JSX.Element => {
         <MenuItem onClick={handleResetAllVotes} dense>
           <Typography variant='body2' color='primary'>
             Reset votes
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={handleClose} dense disabled>
-          <Typography variant='body2' color='primary'>
-            Disable voting
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={handleClose} dense disabled>
-          <Typography variant='body2' color='primary'>
-            Export as csv
           </Typography>
         </MenuItem>
       </Menu>

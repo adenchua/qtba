@@ -9,25 +9,26 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import WarningIcon from "@mui/icons-material/WarningAmber";
 
-import QuestionInterface from "../types/QuestionInterface";
-import deleteQuestion from "../api/deleteQuestion";
-import { QuestionsContext } from "./QuestionsContextProvider";
+import ModuleInterface from "../types/ModuleInterface";
+import deleteModule from "../api/deleteModule";
+import { PlatformsContext } from "./PlatformsContextProvider";
 
-interface DeleteQuestionDialogProps {
+interface DeleteModuleDialogProps {
   isOpen: boolean;
   onCloseHandler: () => void;
-  question: QuestionInterface;
+  module: ModuleInterface;
+  platformId: string;
 }
 
-const DeleteQuestionDialog = (props: DeleteQuestionDialogProps): JSX.Element => {
-  const { deleteQuestion: deleteQuestionInContext } = useContext(QuestionsContext);
-  const { isOpen, onCloseHandler, question } = props;
-  const { title, _id: questionId } = question;
+const DeleteModuleDialog = (props: DeleteModuleDialogProps): JSX.Element => {
+  const { isOpen, onCloseHandler, module, platformId } = props;
+  const { title, _id: moduleId } = module;
+  const { deleteModuleFromPlatform } = useContext(PlatformsContext);
 
   const handleSubmit = async (): Promise<void> => {
     try {
-      await deleteQuestion(questionId);
-      deleteQuestionInContext(questionId);
+      await deleteModule(moduleId);
+      deleteModuleFromPlatform(moduleId, platformId);
     } catch (error) {
       alert("Sorry, something went wrong. Please try again later.");
     } finally {
@@ -40,11 +41,13 @@ const DeleteQuestionDialog = (props: DeleteQuestionDialogProps): JSX.Element => 
       <DialogTitle>
         <Box display='flex' alignItems='start' gap={1}>
           <WarningIcon color='error' />
-          <Typography color='error'>Are you sure you want to delete this question?</Typography>
+          <Typography color='error'>
+            Are you sure you want to delete this module? This action is irreversible and will delete all the questions.
+          </Typography>
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>{title}</DialogContentText>
+        <DialogContentText># {title}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCloseHandler} color='inherit' sx={{ color: "GrayText" }}>
@@ -58,4 +61,4 @@ const DeleteQuestionDialog = (props: DeleteQuestionDialogProps): JSX.Element => 
   );
 };
 
-export default DeleteQuestionDialog;
+export default DeleteModuleDialog;

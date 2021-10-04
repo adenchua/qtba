@@ -1,74 +1,46 @@
-import React, { useState, useEffect } from "react";
-import Drawer from "@material-ui/core/Drawer";
-import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
-import Divider from "@material-ui/core/Divider";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import React, { useEffect, useContext } from "react";
+import Drawer from "@mui/material/Drawer";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import { IconButton } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/AppRegistration";
 import { Link } from "react-router-dom";
 
 import { VERSION_NUMBER, DRAWER_WIDTH } from "../utils/constants";
-import PlatformCreationButton from "./PlatformCreationButton";
 import PlatformInterface from "../types/PlatformInterface";
 import PlatformSection from "./PlatformSection";
 import getPlatforms from "../api/getPlatforms";
-import addPlatform from "../api/addPlatform";
-
-const useStyles = makeStyles((theme: Theme) => ({
-  drawer: {
-    width: DRAWER_WIDTH,
-    height: "100%",
-  },
-  link: {
-    textDecoration: "none",
-    color: "inherit",
-  },
-  mb2: {
-    marginBottom: theme.spacing(2),
-  },
-  platformWrapper: {
-    height: "calc(100vh - 156px)",
-    overflowY: "scroll",
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-    "&::-webkit-scrollbar": {
-      width: 0,
-      height: 0,
-    },
-  },
-}));
+import getPlatformModules from "../api/getPlatformModules";
+import { PlatformsContext } from "./PlatformsContextProvider";
 
 const Sidebar = (): JSX.Element => {
-  const [platforms, setPlatforms] = useState<PlatformInterface[]>([]);
-  const classes = useStyles();
+  const { platforms, setPlatforms } = useContext(PlatformsContext);
 
   useEffect(() => {
     const retrievePlatforms = async (): Promise<void> => {
       try {
-        const response = await getPlatforms();
-        setPlatforms(response);
+        const platforms = await getPlatforms();
+        for (const platform of platforms) {
+          const { modules: moduleIds } = platform;
+          const modules = await getPlatformModules(moduleIds);
+          platform.platformModules = modules;
+        }
+        setPlatforms(platforms); // set it in the store
       } catch (error) {
-        // do nothing
+        alert("Sorry, something went wrong. Please try again later.");
       }
     };
 
     retrievePlatforms();
-  }, []);
-
-  const handleCreatePlatform = async (platformTitle: string): Promise<void> => {
-    try {
-      const newPlatform = await addPlatform(platformTitle);
-      setPlatforms((prevState) => [...prevState, newPlatform]);
-    } catch (error) {
-      // do nothing
-    }
-  };
+  }, [setPlatforms]);
 
   return (
     <Drawer variant='permanent' anchor='left'>
-      <Paper className={classes.drawer} elevation={0} square>
-        <Box p={2} height={70}>
-          <Typography component={Link} to='/' className={classes.link}>
+      <Paper sx={{ width: DRAWER_WIDTH, height: "100%" }} elevation={0} square>
+        <Box p={2} height='70px'>
+          <Typography component={Link} to='/' sx={{ textDecoration: "none", color: "inherit" }}>
             🧱 Design Mondays
           </Typography>
           <Typography variant='caption' color='textSecondary' display='block'>
@@ -76,17 +48,30 @@ const Sidebar = (): JSX.Element => {
           </Typography>
         </Box>
         <Divider />
-        <Box p={2} display='flex' alignItems='center' justifyContent='space-between' height={70}>
+        <Box p={2} display='flex' alignItems='center' justifyContent='space-between' height='70px'>
           <Typography variant='h6'>Platforms</Typography>
-          <PlatformCreationButton createPlatformHandler={handleCreatePlatform} />
+          <IconButton size='small' color='primary' component={Link} to='/platform-settings'>
+            <SettingsIcon fontSize='small' />
+          </IconButton>
         </Box>
-        <div className={classes.platformWrapper}>
+        <Box
+          sx={{
+            height: "calc(100vh - 156px)",
+            overflowY: "scroll",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            "&::-webkit-scrollbar": {
+              width: 0,
+              height: 0,
+            },
+          }}
+        >
           {platforms.map((platform: PlatformInterface) => (
-            <div key={platform._id} className={classes.mb2}>
+            <Box key={platform._id} mb={2}>
               <PlatformSection platform={platform} />
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
       </Paper>
     </Drawer>
   );

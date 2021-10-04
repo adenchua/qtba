@@ -1,25 +1,24 @@
-import React, { useState } from "react";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import Typography from "@material-ui/core/Typography";
+import React, { useState, useContext } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Typography from "@mui/material/Typography";
 
 import QuestionInterface from "../types/QuestionInterface";
 import EditQuestionDialog from "./EditQuestionDialog";
 import DeleteQuestionDialog from "./DeleteQuestionDialog";
+import strikethroughQuestion from "../api/strikethroughQuestion";
+import { QuestionsContext } from "./QuestionsContextProvider";
+import unStrikethroughQuestion from "../api/unStrikethroughQuestion";
 
 interface QuestionMeatballsMenuProps {
-  onStrikethroughHandler: (questionId: string) => Promise<void>;
-  onUnStrikethroughHandler: (questionId: string) => Promise<void>;
-  onEditQuestionHandler: (updatedQuestionTitle: string, questionId: string) => Promise<void>;
-  onDeleteQuestionHandler: (questionId: string) => Promise<void>;
   question: QuestionInterface;
 }
 
 const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element => {
-  const { onStrikethroughHandler, onUnStrikethroughHandler, question, onEditQuestionHandler, onDeleteQuestionHandler } =
-    props;
+  const { editQuestion } = useContext(QuestionsContext);
+  const { question } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
@@ -33,14 +32,25 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
     setAnchorEl(null);
   };
 
-  const handleStrikethrough = () => {
-    onStrikethroughHandler(questionId);
+  const handleStrikethrough = async () => {
+    await strikethroughQuestion(questionId);
+    const updatedQuestion = question;
+    updatedQuestion.isStrikethrough = true;
+    editQuestion(updatedQuestion);
     handleClose();
   };
 
-  const handleUnStikethroughQuestion = () => {
-    onUnStrikethroughHandler(questionId);
-    handleClose();
+  const handleUnStikethroughQuestion = async () => {
+    try {
+      await unStrikethroughQuestion(questionId);
+      const updatedQuestion = question;
+      updatedQuestion.isStrikethrough = false;
+      editQuestion(updatedQuestion);
+    } catch (error) {
+      alert("Sorry, something went wrong. Please try again later.");
+    } finally {
+      handleClose();
+    }
   };
 
   const handleCloseEditingDialog = () => {
@@ -69,7 +79,6 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
       <Menu
         id='menu'
         anchorEl={anchorEl}
-        getContentAnchorEl={null}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
@@ -99,23 +108,13 @@ const QuestionMeatballsMenu = (props: QuestionMeatballsMenuProps): JSX.Element =
           </MenuItem>
         )}
         <MenuItem onClick={handleOpenDeleteDialog} dense>
-          <Typography variant='body2' color='secondary'>
+          <Typography variant='body2' color='error'>
             Delete question
           </Typography>
         </MenuItem>
       </Menu>
-      <EditQuestionDialog
-        question={question}
-        isOpen={isEditDialogOpen}
-        onCloseHandler={handleCloseEditingDialog}
-        onConfirmEditHandler={onEditQuestionHandler}
-      />
-      <DeleteQuestionDialog
-        question={question}
-        isOpen={isDeleteDialogOpen}
-        onCloseHandler={handleCloseDeleteDialog}
-        onConfirmDeleteHandler={onDeleteQuestionHandler}
-      />
+      <EditQuestionDialog isOpen={isEditDialogOpen} onCloseHandler={handleCloseEditingDialog} question={question} />
+      <DeleteQuestionDialog isOpen={isDeleteDialogOpen} onCloseHandler={handleCloseDeleteDialog} question={question} />
     </>
   );
 };

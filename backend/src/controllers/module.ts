@@ -5,6 +5,7 @@ import Question from "../models/question";
 import Platform from "../models/platform";
 import cleanSlug from "../utils/cleanSlug";
 import generateRandomString from "../utils/generateRandomString";
+import removeUndefinedKeysFromObject from "../utils/removeUndefinedKeysFromObject";
 
 async function doesModuleSlugExists(slug: string): Promise<boolean> {
   const module = await Module.findOne({ slug });
@@ -96,6 +97,48 @@ export async function resetModuleQuestionVotes(req: Request, res: Response) {
     for (const questionId of questionIds) {
       await Question.findByIdAndUpdate(questionId, { voteCount: 0 });
     }
+    res.status(204).send();
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).send();
+  }
+}
+
+export async function deleteModule(req: Request, res: Response) {
+  const { moduleId } = req.body;
+
+  try {
+    const module = await Module.findById(moduleId);
+    if (!module) {
+      res.status(400).send();
+      return;
+    }
+    const questionIds = module.questions;
+    // delete all questions first, then delete module
+    for (const questionId of questionIds) {
+      await Question.findByIdAndDelete(questionId);
+    }
+
+    await Module.findByIdAndDelete(moduleId);
+    res.status(204).send();
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).send();
+  }
+}
+
+export async function editModule(req: Request, res: Response) {
+  const { moduleId, title, isVotingDisabled } = req.body; // only allow title and isVotingDisabled fields to update
+
+  const updatedFields = removeUndefinedKeysFromObject({ title, isVotingDisabled });
+
+  if (!moduleId) {
+    res.status(400).send();
+    return;
+  }
+
+  try {
+    await Module.findByIdAndUpdate(moduleId, updatedFields);
     res.status(204).send();
   } catch (error) {
     console.error("error", error);
