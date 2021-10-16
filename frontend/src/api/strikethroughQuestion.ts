@@ -11,7 +11,11 @@ export default async function strikethroughQuestion(questionId: string): Promise
   try {
     await axios.patch(`${API_ENDPOINT}/questions`, body);
     return;
-  } catch (err) {
-    throw new Error(err.response.data.message);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error("Axios Error");
+    } else {
+      throw new Error("Unexpected Error");
+    }
   }
 }

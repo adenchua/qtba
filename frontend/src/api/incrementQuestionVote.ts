@@ -7,7 +7,11 @@ export default async function incrementQuestionVote(questionId: string): Promise
   try {
     const response = await axios.post(`${API_ENDPOINT}/questions/votes`, { questionId });
     return response.data;
-  } catch (err) {
-    throw new Error(err.response.data.message);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error("Axios Error");
+    } else {
+      throw new Error("Unexpected Error");
+    }
   }
 }

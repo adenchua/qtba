@@ -11,7 +11,11 @@ export default async function updateModuleTitle(moduleId: string, title: string)
   try {
     await axios.patch(`${API_ENDPOINT}/modules`, body);
     return;
-  } catch (err) {
-    throw new Error(err.response.data.message);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error("Axios Error");
+    } else {
+      throw new Error("Unexpected Error");
+    }
   }
 }

@@ -7,7 +7,11 @@ export default async function addPlatform(title: string): Promise<PlatformInterf
   try {
     const response = await axios.post(`${API_ENDPOINT}/platforms`, { title });
     return response.data;
-  } catch (err) {
-    throw new Error(err.response.data.message);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error("Axios Error");
+    } else {
+      throw new Error("Unexpected Error");
+    }
   }
 }

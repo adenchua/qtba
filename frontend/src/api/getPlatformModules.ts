@@ -7,7 +7,11 @@ export default async function getPlatformModules(moduleIds: string[]): Promise<M
   try {
     const response = await axios.post(`${API_ENDPOINT}/modules/bulk-retrieve`, { moduleIds });
     return response.data;
-  } catch (err) {
-    throw new Error(err.response.data.message);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error("Axios Error");
+    } else {
+      throw new Error("Unexpected Error");
+    }
   }
 }

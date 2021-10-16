@@ -6,7 +6,11 @@ export default async function resetModuleQuestionVotes(moduleId: string): Promis
   try {
     await axios.post(`${API_ENDPOINT}/modules/questions-vote-reset`, { moduleId });
     return;
-  } catch (err) {
-    throw new Error(err.response.data.message);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error("Axios Error");
+    } else {
+      throw new Error("Unexpected Error");
+    }
   }
 }
