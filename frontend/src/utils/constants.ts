@@ -1,6 +1,6 @@
 export const DRAWER_WIDTH = "240px";
 
-export const VERSION_NUMBER = "1.3.0-alpha";
+export const VERSION_NUMBER = "1.4.0-alpha";
 
 export const API_ENDPOINT = "/api";
 

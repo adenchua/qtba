@@ -15,6 +15,7 @@ import ModuleInterface from "../types/ModuleInterface";
 import getModuleQuestions from "../api/getModuleQuestions";
 import resetModuleQuestionVotes from "../api/resetModuleQuestionVotes";
 import { QuestionsContext } from "../components/QuestionsContextProvider";
+import { LinearProgress } from "@mui/material";
 
 const ModulePage = (): JSX.Element => {
   const { questions, setQuestions, resetAllQuestionVotes } = useContext(QuestionsContext);
@@ -32,6 +33,7 @@ const ModulePage = (): JSX.Element => {
       }
 
       try {
+        setIsLoading(true);
         const response = await getModuleBySlug(moduleSlug);
         const { questions: questionIds } = response;
         await retrieveQuestionsFromModule(questionIds);
@@ -122,11 +124,19 @@ const ModulePage = (): JSX.Element => {
     </Box>
   );
 
+  if (isLoading) {
+    return (
+      <PageLayoutWrapper withPadding={false}>
+        <LinearProgress color='primary' />
+      </PageLayoutWrapper>
+    );
+  }
+
   return (
-    <PageLayoutWrapper>
-      <Typography variant='h5'>{`# ${module?.title}`}</Typography>
-      {!isLoading && questions.length === 0 && renderNoQuestionsContent()}
-      {!isLoading && questions.length !== 0 && renderTableWithHeader()}
+    <PageLayoutWrapper withPadding>
+      {<Typography variant='h5'>{`# ${module?.title}`}</Typography>}
+      {questions.length === 0 && renderNoQuestionsContent()}
+      {questions.length !== 0 && renderTableWithHeader()}
     </PageLayoutWrapper>
   );
 };

@@ -21,7 +21,8 @@ const PlatformCreationButton = (): JSX.Element => {
     setPlatformInput("");
   };
 
-  const handleCreatePlatform = async (): Promise<void> => {
+  const handleCreatePlatform = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
     try {
       const newPlatform = await addPlatform(platformInput);
       addPlatformInContext(newPlatform);
@@ -38,28 +39,30 @@ const PlatformCreationButton = (): JSX.Element => {
         Create Platform
       </Button>
       <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='sm' fullWidth>
-        <DialogTitle>New Platform</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            variant='standard'
-            margin='dense'
-            label='Platform'
-            placeholder='Inventory Management System'
-            fullWidth
-            inputProps={{ maxLength: PLATFORM_MAX_LENGTH }}
-            value={platformInput}
-            onChange={(e) => setPlatformInput(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color='inherit' sx={{ color: "GrayText" }}>
-            Cancel
-          </Button>
-          <Button onClick={handleCreatePlatform} color='primary' disabled={platformInput.length === 0}>
-            Create Platform
-          </Button>
-        </DialogActions>
+        <form onSubmit={handleCreatePlatform}>
+          <DialogTitle>New Platform</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              variant='standard'
+              margin='dense'
+              label='Platform'
+              placeholder='Inventory Management System'
+              fullWidth
+              inputProps={{ maxLength: PLATFORM_MAX_LENGTH }}
+              value={platformInput}
+              onChange={(e) => setPlatformInput(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color='inherit' sx={{ color: "GrayText" }}>
+              Cancel
+            </Button>
+            <Button type='submit' color='primary' disabled={platformInput.length === 0}>
+              Create Platform
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   );

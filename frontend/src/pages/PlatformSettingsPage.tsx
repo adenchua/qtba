@@ -29,7 +29,7 @@ const PlatformSettingsPage = (): JSX.Element => {
   };
 
   return (
-    <PageLayoutWrapper>
+    <PageLayoutWrapper withPadding>
       <Typography variant='h5' mb={4}>
         Manage Platforms
       </Typography>

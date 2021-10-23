@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   tableHeaderRow: {
     padding: "8px 8px 8px 16px",
-    borderBottom: `2px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   tableHeaderText: {
     textTransform: "uppercase",
@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: "#FFF",
     "&:not(:last-child)": {
       borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+    "&:hover": {
+      backgroundColor: `rgba(0, 0, 0, 0.01)`,
     },
   },
   tableBodyRowColumn: {

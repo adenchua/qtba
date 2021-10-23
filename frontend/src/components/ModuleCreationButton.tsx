@@ -28,7 +28,8 @@ const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => 
     setModuleInput("");
   };
 
-  const handleAddModule = async (): Promise<void> => {
+  const handleAddModule = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
     try {
       const newModule = await addModuleToPlatform(moduleInput, platformId);
       addModuleToPlatformInContext(newModule, platformId);
@@ -45,30 +46,32 @@ const ModuleCreationButton = (props: ModuleCreationButtonProps): JSX.Element => 
         <AddIcon fontSize='small' />
       </IconButton>
       <Dialog open={isDialogOpen} onClose={handleClose} maxWidth='xs' fullWidth>
-        <DialogTitle>New Module</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            variant='standard'
-            margin='dense'
-            placeholder='User Profile Page'
-            InputProps={{
-              startAdornment: <InputAdornment position='start'>#</InputAdornment>,
-            }}
-            fullWidth
-            inputProps={{ maxLength: MODULE_MAX_LENGTH }}
-            value={moduleInput}
-            onChange={(e) => setModuleInput(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color='inherit' sx={{ color: "GrayText" }}>
-            Cancel
-          </Button>
-          <Button onClick={handleAddModule} color='primary' disabled={moduleInput.length === 0}>
-            Add Module
-          </Button>
-        </DialogActions>
+        <form onSubmit={handleAddModule}>
+          <DialogTitle>New Module</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              variant='standard'
+              margin='dense'
+              placeholder='User Profile Page'
+              InputProps={{
+                startAdornment: <InputAdornment position='start'>#</InputAdornment>,
+              }}
+              fullWidth
+              inputProps={{ maxLength: MODULE_MAX_LENGTH }}
+              value={moduleInput}
+              onChange={(e) => setModuleInput(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color='inherit' sx={{ color: "GrayText" }}>
+              Cancel
+            </Button>
+            <Button type='submit' color='primary' disabled={moduleInput.length === 0}>
+              Add Module
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   );

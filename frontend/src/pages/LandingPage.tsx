@@ -6,7 +6,7 @@ import PageLayoutWrapper from "./PageLayoutWrapper";
 
 const LandingPage = (): JSX.Element => {
   return (
-    <PageLayoutWrapper>
+    <PageLayoutWrapper withPadding>
       <Grid container>
         <Grid item xs={12} md={6}>
           <Typography variant='h3' mb={4}>
