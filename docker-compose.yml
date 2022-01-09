@@ -3,7 +3,7 @@ version: "3.7"
 services:
   mongodb:
     container_name: mongodb
-    image: mongo:5.0.2
+    image: mongo:5.0
     volumes:
       - ./database:/data/db
     restart: always
